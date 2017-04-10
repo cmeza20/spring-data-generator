@@ -239,7 +239,7 @@ public class ObjectStructure {
         }
 
         public ObjectConstructor addArgument(String argumentClass, String argumentName) {
-            constructorArguments.add(new Pair<Object, Object>(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
+            constructorArguments.add(new Pair<>(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
             return this;
         }
 
@@ -317,7 +317,7 @@ public class ObjectStructure {
         }
 
         public ObjectFunction addArgument(String argumentClass, String argumentName) {
-            functionArguments.add(new Pair<Object, Object>(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
+            functionArguments.add(new Pair<>(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
             return this;
         }
 
@@ -402,7 +402,7 @@ public class ObjectStructure {
         }
 
         public ObjectMethod addArgument(String argumentClass, String argumentName) {
-            methodArguments.add(new Pair<Object, Object>(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
+            methodArguments.add(new Pair<>(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
             return this;
         }
 

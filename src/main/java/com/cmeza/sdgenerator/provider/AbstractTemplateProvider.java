@@ -69,7 +69,12 @@ public abstract class AbstractTemplateProvider {
     }
 
     private boolean verifyEntityNonExclude(String beanClassName){
-        return Arrays.stream(excludeClasses).anyMatch(b -> b.getName().equals(beanClassName));
+        for (Class<?> clazz : excludeClasses) {
+            if (clazz.getName().equals(beanClassName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean createHelper(String path, BeanDefinition beanDefinition, String postfix, String repositoryPackage){

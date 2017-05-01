@@ -2,8 +2,13 @@ package com.cmeza.sdgenerator.support;
 
 import com.cmeza.sdgenerator.provider.AbstractTemplateProvider;
 import com.cmeza.sdgenerator.support.maker.ManagerStructure;
+import com.cmeza.sdgenerator.util.GeneratorUtils;
+import com.cmeza.sdgenerator.util.Tuple;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.annotation.AnnotationAttributes;
+
+import java.io.File;
+import java.util.Arrays;
 
 /**
  * Created by carlos on 08/04/17.
@@ -17,10 +22,25 @@ public class ManagerTemplateSupport extends AbstractTemplateProvider {
         super(attributes);
         this.repositoryPackage = repositoryPackage;
         this.repositoryPostfix = repositoryPostfix;
+        this.findFilterRepositories();
+    }
+
+    public ManagerTemplateSupport(String postfix, String repositoryPackage, String repositoryPostfix) {
+        super(postfix);
+        this.repositoryPackage = repositoryPackage;
+        this.repositoryPostfix = repositoryPostfix;
+        this.findFilterRepositories();
+    }
+
+    private void findFilterRepositories() {
+        String repositoryPath = GeneratorUtils.getAbsolutePath() + repositoryPackage.replace(".", "/");
+        File[] repositoryFiles = GeneratorUtils.getFileList(repositoryPath, repositoryPostfix);
+        this.setIncludeFilter(Arrays.asList(repositoryFiles));
+        this.setIncludeFilterPostfix(repositoryPostfix);
     }
 
     @Override
-    protected String getContentFromTemplate(String mPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition) {
+    protected Tuple<String, Integer> getContentFromTemplate(String mPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition) {
         return new ManagerStructure(mPackage, simpleClassName, postfix, repositoryPackage, repositoryPostfix).build();
     }
 

@@ -1,7 +1,5 @@
 package com.cmeza.sdgenerator.provider;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -13,22 +11,28 @@ import java.lang.annotation.Annotation;
  */
 public class ClassPathScanningProvider extends ClassPathScanningCandidateComponentProvider {
 
-    private final static String entityClass = "javax.persistence.Entity";
-    private final static Log logger = LogFactory.getLog(ClassPathScanningProvider.class);
+    private Class<?> classComparator;
 
-    @SuppressWarnings("unchecked")
     public ClassPathScanningProvider() {
         super(false);
-        try {
-            super.addIncludeFilter(new AnnotationTypeFilter((Class<? extends Annotation>) Class.forName(entityClass)));
-        } catch (ClassNotFoundException e) {
-            logger.error(e);
-        }
+    }
+
+    public void setIncludeAnnotation(Class<? extends Annotation> annotation) {
+        this.classComparator = annotation;
+        super.addIncludeFilter(new AnnotationTypeFilter(annotation));
+    }
+
+    public void setExcludeAnnotation(Class<? extends Annotation> annotation) {
+        super.addExcludeFilter(new AnnotationTypeFilter(annotation));
     }
 
     @Override
     protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
-        boolean isNonRepositoryInterface = !entityClass.equals(beanDefinition.getBeanClassName());
+        if (classComparator == null) {
+            return false;
+        }
+
+        boolean isNonRepositoryInterface = !classComparator.getName().equals(beanDefinition.getBeanClassName());
         boolean isTopLevelType = !beanDefinition.getMetadata().hasEnclosingClass();
         return isNonRepositoryInterface && isTopLevelType;
     }

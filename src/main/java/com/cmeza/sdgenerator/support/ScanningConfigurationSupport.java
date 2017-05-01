@@ -1,5 +1,7 @@
 package com.cmeza.sdgenerator.support;
 
+import com.cmeza.sdgenerator.annotation.SDGenerate;
+import com.cmeza.sdgenerator.annotation.SDNoGenerate;
 import com.cmeza.sdgenerator.provider.ClassPathScanningProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.annotation.AnnotationAttributes;
@@ -9,6 +11,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
+import javax.persistence.Entity;
 import java.util.*;
 
 /**
@@ -19,6 +22,8 @@ public class ScanningConfigurationSupport {
     private final Environment environment;
     private final AnnotationAttributes attributes;
     private final AnnotationMetadata annotationMetadata;
+    private final String[] entityPackage;
+    private final boolean onlyAnnotations;
 
     public ScanningConfigurationSupport(AnnotationMetadata annotationMetadata, AnnotationAttributes attributes, Environment environment){
         Assert.notNull(environment, "Environment must not be null!");
@@ -26,12 +31,20 @@ public class ScanningConfigurationSupport {
         this.environment = environment;
         this.attributes = attributes;
         this.annotationMetadata = annotationMetadata;
+        this.entityPackage = this.attributes.getStringArray("entityPackage");
+        this.onlyAnnotations = this.attributes.getBoolean("onlyAnnotations");
+    }
+
+    public ScanningConfigurationSupport(String[] entityPackage, boolean onlyAnnotations) {
+        this.entityPackage = entityPackage;
+        this.onlyAnnotations = onlyAnnotations;
+        this.environment = null;
+        this.annotationMetadata = null;
+        this.attributes = null;
     }
 
     @SuppressWarnings("unchecked")
     private Iterable<String> getBasePackages() {
-
-        String[] entityPackage = this.attributes.getStringArray("entityPackage");
 
         if (entityPackage.length == 0) {
             String className = this.annotationMetadata.getClassName();
@@ -52,7 +65,15 @@ public class ScanningConfigurationSupport {
 
         ClassPathScanningProvider scanner = new ClassPathScanningProvider();
         scanner.setResourceLoader(resourceLoader);
-        scanner.setEnvironment(this.environment);
+        if (environment != null) {
+            scanner.setEnvironment(this.environment);
+        }
+
+        scanner.setIncludeAnnotation(SDGenerate.class);
+        scanner.setExcludeAnnotation(SDNoGenerate.class);
+        if (!onlyAnnotations) {
+            scanner.setIncludeAnnotation(Entity.class);
+        }
 
         Iterator filterPackages = this.getBasePackages().iterator();
 

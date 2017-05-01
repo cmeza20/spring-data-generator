@@ -30,4 +30,6 @@ public @interface SDGenerator {
     String[] entityPackage() default {};
 
     boolean debug() default false;
+
+    boolean onlyAnnotations() default false;
 }

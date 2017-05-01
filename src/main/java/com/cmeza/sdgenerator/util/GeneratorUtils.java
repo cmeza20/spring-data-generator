@@ -1,9 +1,7 @@
 package com.cmeza.sdgenerator.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,15 +12,20 @@ import java.nio.file.Paths;
  */
 public class GeneratorUtils {
 
-    private static final Log logger = LogFactory.getLog(GeneratorUtils.class);
-
     public static String getAbsolutePath(){
         try {
             return new File(".").getCanonicalPath() + "/src/main/java/";
         } catch (IOException e) {
-            logger.error("Failed to get the general path: " + e.getMessage());
+            return null;
         }
-        return null;
+    }
+
+    public static String getAbsolutePath(String strPackage){
+        String absolute = getAbsolutePath();
+        if (absolute == null) {
+            return null;
+        }
+        return absolute + strPackage.replace(".", "/");
     }
 
     public static boolean verifyPackage(String StringPath){
@@ -32,7 +35,7 @@ public class GeneratorUtils {
                 Files.createDirectories(path);
                 return true;
             } catch (IOException e) {
-                logger.error(String.format("Could not create directory: %s ", StringPath) + e.getMessage());
+                SDLogger.addError(String.format("Could not create directory: %s ", StringPath) + e.getMessage());
                 return false;
             }
         }
@@ -54,5 +57,18 @@ public class GeneratorUtils {
         char c[] = cad.toCharArray();
         c[0] = Character.toLowerCase(c[0]);
         return new String(c);
+    }
+
+    public static File[] getFileList(String dirPath, String prefix) {
+        File[] returnFiles = new File(dirPath)
+                .listFiles(
+                        (dir1, name) -> name.contains(prefix) && name.endsWith(".java")
+                );
+
+        if (returnFiles == null) {
+            return new File[]{};
+        }
+        
+        return returnFiles;
     }
 }

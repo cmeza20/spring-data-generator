@@ -7,6 +7,7 @@ import com.cmeza.sdgenerator.support.maker.values.ObjectTypeValues;
 import com.cmeza.sdgenerator.support.maker.values.ObjectValues;
 import com.cmeza.sdgenerator.support.maker.values.ScopeValues;
 import com.cmeza.sdgenerator.util.GeneratorUtils;
+import com.cmeza.sdgenerator.util.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +39,7 @@ public class ManagerStructure {
 
     }
 
-    public String build(){
-        return objectBuilder == null ? null : objectBuilder.build();
+    public Tuple<String, Integer> build(){
+        return new Tuple<>(objectBuilder == null ? null : objectBuilder.build(), 0);
     }
 }

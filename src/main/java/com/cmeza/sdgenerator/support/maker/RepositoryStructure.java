@@ -4,10 +4,11 @@ import com.cmeza.sdgenerator.support.maker.builder.ObjectBuilder;
 import com.cmeza.sdgenerator.support.maker.builder.ObjectStructure;
 import com.cmeza.sdgenerator.support.maker.values.ObjectTypeValues;
 import com.cmeza.sdgenerator.support.maker.values.ScopeValues;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.cmeza.sdgenerator.util.CustomResourceLoader;
+import com.cmeza.sdgenerator.util.SDLogger;
+import com.cmeza.sdgenerator.util.Tuple;
 
-import java.lang.annotation.Annotation;
+import javax.persistence.Id;
 import java.lang.reflect.Field;
 
 /**
@@ -15,43 +16,50 @@ import java.lang.reflect.Field;
  */
 public class RepositoryStructure {
 
-    private static final Log logger = LogFactory.getLog(RepositoryStructure.class);
+    private static CustomResourceLoader loader;
     private ObjectBuilder objectBuilder;
+    private static Integer error = 0;
 
-    public RepositoryStructure(String repositoryPackage, String entityName, String entityClass, String postfix) {
+    public RepositoryStructure(String repositoryPackage, String entityName, String entityClass, String postfix, CustomResourceLoader loader) {
+        this.loader = loader;
         String repositoryName = entityName + postfix;
         String entityId = getEntityId(entityClass);
         if(entityId != null) {
-
-            this.objectBuilder = new ObjectBuilder(new ObjectStructure(repositoryPackage, ScopeValues.PUBLIC, ObjectTypeValues.INTERFACE, repositoryName)
-                    .addImport(entityClass)
-                    .addImport("org.springframework.data.jpa.repository.JpaRepository")
-                    .setExtend("JpaRepository", entityName, entityId)
+            this.objectBuilder = new ObjectBuilder(
+                    new ObjectStructure(repositoryPackage, ScopeValues.PUBLIC, ObjectTypeValues.INTERFACE, repositoryName)
+                            .addImport(entityClass)
+                            .addImport("org.springframework.data.jpa.repository.JpaRepository")
+                            .setExtend("JpaRepository", entityName, entityId)
             );
-
         }
     }
 
     @SuppressWarnings("unchecked")
     private static String getEntityId(String entityClass){
         try{
-            Class<?> entity = Class.forName(entityClass);
+            Class<?> entity = null;
+            if (loader == null) {
+                entity = Class.forName(entityClass);
+            } else {
+                entity = loader.getUrlClassLoader().loadClass(entityClass);
+            }
 
             for (Field field : entity.getDeclaredFields()) {
-                if (field.isAnnotationPresent((Class<? extends Annotation>) Class.forName("javax.persistence.Id"))){
+
+                if (field.isAnnotationPresent(Id.class)){
                     return field.getType().getSimpleName();
                 }
             }
 
-            logger.error("@Id not found: " + entityClass);
+            error = SDLogger.addError("Repository Error: @Id not found: " + entityClass);
             return null;
         }catch (Exception e) {
-            logger.error( "Failed to access entity" + entityClass);
+            error = SDLogger.addError( "Repository Error: Failed to access entity" + entityClass);
             return null;
         }
     }
 
-    public String build(){
-        return objectBuilder == null ? null : objectBuilder.build();
+    public Tuple<String, Integer> build(){
+        return new Tuple<>(objectBuilder == null ? null : objectBuilder.build(), error);
     }
 }

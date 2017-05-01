@@ -5,8 +5,7 @@ import com.cmeza.sdgenerator.support.ManagerTemplateSupport;
 import com.cmeza.sdgenerator.support.RepositoryTemplateSupport;
 import com.cmeza.sdgenerator.support.ScanningConfigurationSupport;
 import com.cmeza.sdgenerator.util.GeneratorUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.cmeza.sdgenerator.util.SDLogger;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
@@ -25,7 +24,6 @@ import java.util.Collection;
  */
 public class SDGeneratorManager implements ImportBeanDefinitionRegistrar, EnvironmentAware, ResourceLoaderAware {
 
-    private final static Log logger = LogFactory.getLog(SDGeneratorManager.class);
     private Environment environment;
     private ResourceLoader resourceLoader;
 
@@ -52,7 +50,7 @@ public class SDGeneratorManager implements ImportBeanDefinitionRegistrar, Enviro
             String managerPackage = attributes.getString("managerPackage");
 
             if (!managerPackage.isEmpty() && repositoryPackage.isEmpty()) {
-                logger.error("Repositories must be generated before generating managers");
+                SDLogger.error("Repositories must be generated before generating managers");
                 return;
             }
 
@@ -62,15 +60,14 @@ public class SDGeneratorManager implements ImportBeanDefinitionRegistrar, Enviro
                 Collection<BeanDefinition> candidates = configurationSource.getCandidates(resourceLoader);
 
                 String absolutePath = GeneratorUtils.getAbsolutePath();
+                if (absolutePath == null) {
+                    SDLogger.addError("Could not define the absolute path!");
+                    return;
+                }
+
                 if (!repositoryPackage.isEmpty()){
 
-                    String repositoriesPath;
-                    if (absolutePath != null){
-                        repositoriesPath = absolutePath + repositoryPackage.replace(".", "/");
-                    } else {
-                        logger.error("Could not define the absolute path of the repositories");
-                        return;
-                    }
+                    String repositoriesPath = absolutePath + repositoryPackage.replace(".", "/");
 
                     RepositoryTemplateSupport repositoryTemplateSupport = new RepositoryTemplateSupport(attributes);
                     repositoryTemplateSupport.initializeCreation(repositoriesPath, repositoryPackage, candidates);
@@ -78,13 +75,7 @@ public class SDGeneratorManager implements ImportBeanDefinitionRegistrar, Enviro
 
                 if (!repositoryPackage.isEmpty() && !managerPackage.isEmpty()) {
 
-                    String managerPath;
-                    if (absolutePath != null){
-                        managerPath = absolutePath + managerPackage.replace(".", "/");
-                    } else {
-                        logger.error("Could not define the absolute path of the manager");
-                        return;
-                    }
+                    String managerPath = absolutePath + managerPackage.replace(".", "/");
 
                     String repositoryPostfix = attributes.getString("repositoryPostfix");
 
@@ -92,6 +83,7 @@ public class SDGeneratorManager implements ImportBeanDefinitionRegistrar, Enviro
                     managerTemplateSupport.initializeCreation(managerPath, managerPackage, candidates);
                 }
 
+                SDLogger.printGeneratedTables(attributes.getBoolean("debug"));
             }
 
         }

@@ -29,6 +29,8 @@ public class RepositoryStructure {
                     new ObjectStructure(repositoryPackage, ScopeValues.PUBLIC, ObjectTypeValues.INTERFACE, repositoryName)
                             .addImport(entityClass)
                             .addImport("org.springframework.data.jpa.repository.JpaRepository")
+                            .addImport("org.springframework.stereotype.Repository")
+                            .addAnnotation("Repository")
                             .setExtend("JpaRepository", entityName, entityId)
             );
         }

@@ -7,20 +7,21 @@ Spring Data Generator for JPA repositories and managers.
 * Generate repositories for JPA Entities
 * Generate managers for JPA Entities
 * EntityScan wrapped annotation
+* Overwrite option
 
 ## Dependencies ##
 
 * **Java 8**
 * **Spring data JPA**
 
-## Generate in Runtime
+## Generate in Runtime ##
 Download the jar through Maven:
 
 ```xml
 <dependency>
   <groupId>com.cmeza</groupId>
   <artifactId>spring-data-generator</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
 </dependency>
 ```
 
@@ -33,7 +34,8 @@ The simple Spring Data JPA configuration with Java-Config looks like this:
         repositoryPostfix = "Repository",
         managerPostfix = "Manager",
         onlyAnnotations = false,
-        debug = false
+        debug = false,
+        overwrite = false
 )
 @SpringBootApplication
 public class AppConfig {
@@ -54,8 +56,9 @@ public class AppConfig {
 | managerPostfix | No | "Manager" | Postfix for managers. example: Account**Manager** |
 | onlyAnnotations | No | false | Scan only classes annotated with @SDGenerate or @SDNoGenerate |
 | debug | No | false | Enable debug log |
+| overwrite | No | false | Overwrite existing files |
 
-## Generate by Plugin
+## Generate by Plugin ##
 Download the jar through Maven:
 ```xml
 <build>
@@ -73,6 +76,7 @@ Download the jar through Maven:
 				<manager-package>com.acme.managers</manager-package>
 				<manager-postfix>Manager</manager-postfix>
 				<only-annotations>false</only-annotations>
+				<overwrite>false</overwrite>
 			</configuration>
 		</plugin>
 	</plugins>
@@ -87,6 +91,7 @@ Download the jar through Maven:
 | repository-postfix | No | "Repository" | Postfix for repositories. example: Account**Repository** |
 | manager-postfix | No | "Manager" | Postfix for managers. example: Account**Manager** |
 | onlyAnnotations | No | false | Scan only classes annotated with @SDGenerate or @SDNoGenerate |
+| overwrite | No | false | Overwrite existing files |
 
 #### Generate repositories (terminal)
 ```
@@ -96,6 +101,8 @@ $ mvn spring-data-generator:repositories
 ```
 $ mvn spring-data-generator:managers
 ```
+
+## Example ##
 
 Sample entity in `com.acme.model`
 
@@ -120,8 +127,8 @@ public class Account {
 Generate a repository interface example in `com.acme.repositories`:
 
 ```java
+@Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    
 }
 ```
 
@@ -139,6 +146,10 @@ public class AccountManager {
     private AccountRepository accountRepository;
 }
 ```
+
+## Notes ##
+
+* The overwrite option delete the existing file to regenerate
 
 License
 ----

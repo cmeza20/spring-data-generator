@@ -18,8 +18,8 @@ public class RepositoryTemplateSupport extends AbstractTemplateProvider {
         super(attributes);
     }
 
-    public RepositoryTemplateSupport(String postfix, CustomResourceLoader loader) {
-        super(postfix);
+    public RepositoryTemplateSupport(CustomResourceLoader loader) {
+        super(loader);
         this.loader = loader;
     }
 

@@ -31,6 +31,9 @@ public abstract class CommonsMojo extends AbstractMojo {
     @Parameter(name = Constants.ONLY_ANNOTATIONS, defaultValue = "false")
     protected Boolean onlyAnnotations;
 
+    @Parameter(name = Constants.OVERWRITE, defaultValue = "false")
+    protected Boolean overwrite;
+
     @Component
     protected MavenProject project;
 

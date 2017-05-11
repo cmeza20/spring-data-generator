@@ -2,6 +2,7 @@ package com.cmeza.sdgenerator.support;
 
 import com.cmeza.sdgenerator.provider.AbstractTemplateProvider;
 import com.cmeza.sdgenerator.support.maker.ManagerStructure;
+import com.cmeza.sdgenerator.util.CustomResourceLoader;
 import com.cmeza.sdgenerator.util.GeneratorUtils;
 import com.cmeza.sdgenerator.util.Tuple;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -25,10 +26,10 @@ public class ManagerTemplateSupport extends AbstractTemplateProvider {
         this.findFilterRepositories();
     }
 
-    public ManagerTemplateSupport(String postfix, String repositoryPackage, String repositoryPostfix) {
-        super(postfix);
-        this.repositoryPackage = repositoryPackage;
-        this.repositoryPostfix = repositoryPostfix;
+    public ManagerTemplateSupport(CustomResourceLoader customResourceLoader) {
+        super(customResourceLoader);
+        this.repositoryPackage = customResourceLoader.getRepositoryPackage();
+        this.repositoryPostfix = customResourceLoader.getRepositoryPostfix();
         this.findFilterRepositories();
     }
 

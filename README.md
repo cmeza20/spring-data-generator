@@ -1,4 +1,5 @@
-# Spring Data Generator [![Build Status](https://travis-ci.org/cmeza20/spring-data-generator.svg?branch=master)](https://travis-ci.org/cmeza20/spring-data-generator)
+# Spring Data Generator [![Build Status](https://travis-ci.org/cmeza20/spring-data-generator.svg?branch=master)](https://travis-ci.org/cmeza20/spring-data-generator) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.cmeza/spring-data-generator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.cmeza/spring-data-generator)
+
 Spring Data Generator for JPA repositories and managers.
 
 ## Features ##

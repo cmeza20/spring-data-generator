@@ -67,7 +67,7 @@ Download the jar through Maven:
 		<plugin>
 			<groupId>com.cmeza</groupId>
 			<artifactId>spring-data-generator</artifactId>
-			<version>1.1.0</version>
+			<version>1.1.1</version>
 			<configuration>
 				<entity-package>
 				    <param>com.acme.model</param>

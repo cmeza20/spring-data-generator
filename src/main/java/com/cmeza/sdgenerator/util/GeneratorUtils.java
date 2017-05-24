@@ -1,7 +1,6 @@
 package com.cmeza.sdgenerator.util;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,6 +10,9 @@ import java.nio.file.Paths;
  * Created by carlos on 08/04/17.
  */
 public class GeneratorUtils {
+
+    private GeneratorUtils() {
+    }
 
     public static String getAbsolutePath(){
         try {
@@ -28,14 +30,14 @@ public class GeneratorUtils {
         return absolute + strPackage.replace(".", "/");
     }
 
-    public static boolean verifyPackage(String StringPath){
-        Path path = Paths.get(StringPath);
-        if (!Files.exists(path)) {
+    public static boolean verifyPackage(String stringPath){
+        Path path = Paths.get(stringPath);
+        if (!path.toFile().exists()) {
             try {
                 Files.createDirectories(path);
                 return true;
             } catch (IOException e) {
-                SDLogger.addError(String.format("Could not create directory: %s ", StringPath) + e.getMessage());
+                SDLogger.addError(String.format("Could not create directory: %s ", stringPath) + e.getMessage());
                 return false;
             }
         }
@@ -54,7 +56,7 @@ public class GeneratorUtils {
     }
 
     public static String decapitalize(String cad) {
-        char c[] = cad.toCharArray();
+        char[] c = cad.toCharArray();
         c[0] = Character.toLowerCase(c[0]);
         return new String(c);
     }

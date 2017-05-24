@@ -15,12 +15,15 @@ import java.util.List;
  * Created by carlos on 23/04/17.
  */
 public class SDLogger {
-    private final static Log commonsLogger = LogFactory.getLog(SDGenerator.class);
+    private static final Log commonsLogger = LogFactory.getLog(SDGenerator.class);
     private static org.apache.maven.plugin.logging.Log mavenLogger;
     private static int generated = 0;
     private static List<String> errors = new ArrayList<>();
     private static List<String> warns = new ArrayList<>();
     private static AsciiTable generatedTable;
+
+    private SDLogger() {
+    }
 
     public static void configure(org.apache.maven.plugin.logging.Log log) {
         mavenLogger = log;
@@ -76,13 +79,13 @@ public class SDLogger {
 
         int count = 1;
         for (String mess : messages) {
-            table.addRow("#" + count, mess).getCells().get(0).getContext().setTextAlignment(TextAlignment.CENTER);;
+            table.addRow("#" + count, mess).getCells().get(0).getContext().setTextAlignment(TextAlignment.CENTER);
             table.addRule();
             count ++;
         }
 
         table.getRenderer().setCWC(new CWC_LongestWordMin(new int[]{5, 101}));
-        table.renderAsCollection().forEach(row -> info(row));
+        table.renderAsCollection().forEach(SDLogger::info);
     }
 
     public static void addRowGeneratedTable(Object... columns) {
@@ -117,11 +120,11 @@ public class SDLogger {
             }
             generatedTable.addRule();
             generatedTable.getRenderer().setCWC(new CWC_LongestWordMin(new int[]{20, 68, 17}));
-            generatedTable.renderAsCollection().forEach(row -> info(row));
+            generatedTable.renderAsCollection().forEach(SDLogger::info);
 
             info("");
 
-            if (warns.size() > 0) {
+            if (!warns.isEmpty()) {
                 printWarns();
             }
 
@@ -129,7 +132,7 @@ public class SDLogger {
             info(String.format("\u001B[1m\u001B[43m  %s:\u001B[0m\u001B[43m %s files generated  \u001B[0m", Constants.PROJECT_NAME, generated));
         }
 
-        if (errors.size() > 0) {
+        if (!errors.isEmpty()) {
             info("");
             printErrors();
             info("");
@@ -155,7 +158,7 @@ public class SDLogger {
         banner.add(" ___/ / /_/ / /  / / / / / /_/ /  / /_/ / /_/ / /_/ /_/ /  / /_/ /  __/ / / /  __/ /  / /_/ / /_/ /_/ / /    ");
         banner.add("/____/ .___/_/  /_/_/ /_/\\__, /  /_____/\\__,_/\\__/\\__,_/   \\____/\\___/_/ /_/\\___/_/   \\__,_/\\__/\\____/_/     ");
         banner.add("====/_/=================/____/======================================================================" + Constants.VERSION);
-        banner.forEach(str -> info(str));
+        banner.forEach(SDLogger::info);
     }
 
 }

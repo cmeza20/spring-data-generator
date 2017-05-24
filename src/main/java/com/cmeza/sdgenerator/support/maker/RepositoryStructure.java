@@ -16,9 +16,9 @@ import java.lang.reflect.Field;
  */
 public class RepositoryStructure {
 
-    private static CustomResourceLoader loader;
+    private CustomResourceLoader loader;
     private ObjectBuilder objectBuilder;
-    private static Integer error = 0;
+    private Integer error = 0;
 
     public RepositoryStructure(String repositoryPackage, String entityName, String entityClass, String postfix, CustomResourceLoader loader) {
         this.loader = loader;
@@ -35,7 +35,7 @@ public class RepositoryStructure {
     }
 
     @SuppressWarnings("unchecked")
-    private static String getEntityId(String entityClass){
+    private String getEntityId(String entityClass){
         try{
             Class<?> entity = null;
             if (loader == null) {

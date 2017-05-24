@@ -18,13 +18,13 @@ public class CustomResourceLoader implements ResourceLoader {
 
     private URLClassLoader urlClassLoader;
 
-    public CustomResourceLoader(MavenProject project) {
+    public CustomResourceLoader(MavenProject project){
 
         try {
             List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
             URL[] runtimeUrls = new URL[runtimeClasspathElements.size()];
             for (int i = 0; i < runtimeClasspathElements.size(); i++) {
-                String element = (String) runtimeClasspathElements.get(i);
+                String element = runtimeClasspathElements.get(i);
                 runtimeUrls[i] = new File(element).toURI().toURL();
             }
             urlClassLoader = new URLClassLoader(runtimeUrls, Thread.currentThread().getContextClassLoader());

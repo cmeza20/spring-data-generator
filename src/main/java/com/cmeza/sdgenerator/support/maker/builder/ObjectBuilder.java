@@ -2,7 +2,6 @@ package com.cmeza.sdgenerator.support.maker.builder;
 
 import com.cmeza.sdgenerator.support.maker.values.CommonValues;
 import com.cmeza.sdgenerator.util.Constants;
-import com.cmeza.sdgenerator.util.Tuple;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

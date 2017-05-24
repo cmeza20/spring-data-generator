@@ -13,7 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by carlos on 08/04/17.
@@ -45,18 +44,22 @@ public abstract class AbstractTemplateProvider {
 
     public void initializeCreation(String path, String ePackage, Collection<BeanDefinition> candidates) {
         int generatedCount = 0;
-        if(GeneratorUtils.verifyPackage(path)){
+        
+        if(!GeneratorUtils.verifyPackage(path)){
+            return;
+        }
 
-            for (BeanDefinition beanDefinition : candidates) {
-                if (!verifyEntityNonExclude(beanDefinition.getBeanClassName())){
-                    if (createHelper(path, beanDefinition, postfix, ePackage)) {
-                        generatedCount++;
-                    }
-                }
+        for (BeanDefinition beanDefinition : candidates) {
+            if (verifyEntityNonExclude(beanDefinition.getBeanClassName())){
+                continue;
             }
 
-            SDLogger.plusGenerated(generatedCount);
+            if (createHelper(path, beanDefinition, postfix, ePackage)) {
+                generatedCount++;
+            }
         }
+
+        SDLogger.plusGenerated(generatedCount);
     }
 
     protected void setIncludeFilter(Collection<File> includeFilter){

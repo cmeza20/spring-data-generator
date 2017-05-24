@@ -3,11 +3,9 @@ package com.cmeza.sdgenerator.plugin;
 import com.cmeza.sdgenerator.support.RepositoryTemplateSupport;
 import com.cmeza.sdgenerator.support.ScanningConfigurationSupport;
 import com.cmeza.sdgenerator.util.*;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.project.MavenProject;
 
 /**
  * Created by carlos on 22/04/17.
@@ -16,8 +14,6 @@ import org.apache.maven.project.MavenProject;
 @Execute(phase = LifecyclePhase.COMPILE)
 @SuppressWarnings("unused")
 public class SDRepositoryMojo extends CommonsMojo{
-
-    private CustomResourceLoader resourceLoader;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -28,7 +24,7 @@ public class SDRepositoryMojo extends CommonsMojo{
         this.validateField(Constants.REPOSITORY_PACKAGE);
 
         try {
-            resourceLoader = new CustomResourceLoader(project);
+            CustomResourceLoader resourceLoader = new CustomResourceLoader(project);
 
             String absolutePath = GeneratorUtils.getAbsolutePath(repositoryPackage);
             if (absolutePath == null){
@@ -45,7 +41,7 @@ public class SDRepositoryMojo extends CommonsMojo{
 
         } catch (Exception e) {
             SDLogger.addError(e.getMessage());
-            throw new SDMojoException(e.getMessage());
+            throw new SDMojoException(e.getMessage(), e);
         }
     }
     

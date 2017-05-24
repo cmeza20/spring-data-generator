@@ -17,6 +17,10 @@ import java.util.List;
 public class CustomResourceLoader implements ResourceLoader {
 
     private URLClassLoader urlClassLoader;
+    private String postfix;
+    private boolean overwrite;
+    private String repositoryPackage;
+    private String repositoryPostfix;
 
     public CustomResourceLoader(MavenProject project){
 
@@ -47,4 +51,39 @@ public class CustomResourceLoader implements ResourceLoader {
         return this.urlClassLoader;
     }
 
+    public String getPostfix() {
+        return postfix;
+    }
+
+    public CustomResourceLoader setPostfix(String postfix) {
+        this.postfix = postfix;
+        return this;
+    }
+
+    public boolean isOverwrite() {
+        return overwrite;
+    }
+
+    public CustomResourceLoader setOverwrite(boolean overwrite) {
+        this.overwrite = overwrite;
+        return this;
+    }
+
+    public String getRepositoryPackage() {
+        return repositoryPackage;
+    }
+
+    public CustomResourceLoader setRepositoryPackage(String repositoryPackage) {
+        this.repositoryPackage = repositoryPackage;
+        return this;
+    }
+
+    public String getRepositoryPostfix() {
+        return repositoryPostfix;
+    }
+
+    public CustomResourceLoader setRepositoryPostfix(String repositoryPostfix) {
+        this.repositoryPostfix = repositoryPostfix;
+        return this;
+    }
 }

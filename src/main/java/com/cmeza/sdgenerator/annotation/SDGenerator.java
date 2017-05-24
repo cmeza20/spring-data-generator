@@ -32,4 +32,6 @@ public @interface SDGenerator {
     boolean debug() default false;
 
     boolean onlyAnnotations() default false;
+
+    boolean overwrite() default false;
 }

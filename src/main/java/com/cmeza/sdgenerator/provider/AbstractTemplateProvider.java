@@ -1,5 +1,6 @@
 package com.cmeza.sdgenerator.provider;
 
+import com.cmeza.sdgenerator.util.CustomResourceLoader;
 import com.cmeza.sdgenerator.util.GeneratorUtils;
 import com.cmeza.sdgenerator.util.SDLogger;
 import com.cmeza.sdgenerator.util.Tuple;
@@ -24,22 +25,25 @@ public abstract class AbstractTemplateProvider {
     private boolean debug;
     private Collection<File> includeFilter;
     private String includeFilterPostfix = "";
+    private boolean overwrite;
 
     public AbstractTemplateProvider(AnnotationAttributes attributes) {
         Assert.notNull(attributes, "AnnotationAttributes must not be null!");
         this.excludeClasses = attributes.getClassArray(getExcludeClasses());
         this.postfix = attributes.getString(getPostfix());
         this.debug = attributes.getBoolean("debug");
+        this.overwrite = attributes.getBoolean("overwrite");
         if (excludeClasses.length > 0 && debug) {
             SDLogger.debug(String.format("Exclude %s %s in the %s generator", excludeClasses.length, excludeClasses.length == 1 ? "entity":"entities", postfix));
         }
     }
 
-    public AbstractTemplateProvider(String postfix) {
-        Assert.notNull(postfix, "Postfix must not be null!");
-        this.postfix = postfix;
+    public AbstractTemplateProvider(CustomResourceLoader customResourceLoader) {
+        Assert.notNull(customResourceLoader, "CustomResourceLoader must not be null!");
+        this.postfix = customResourceLoader.getPostfix();
         this.debug = true;
         this.excludeClasses = new Class[]{};
+        this.overwrite = customResourceLoader.isOverwrite();
     }
 
     public void initializeCreation(String path, String ePackage, Collection<BeanDefinition> candidates) {
@@ -107,10 +111,17 @@ public abstract class AbstractTemplateProvider {
             }
 
             File file = new File(filePath);
+
+            String fileCondition = "Created";
+            if (overwrite && file.exists()) {
+                file.delete();
+                fileCondition = "Overwritten";
+            }
+
             if (!file.exists()){
                 result = createFileFromTemplate(filePath, repositoryPackage, simpleClassName, postfix, beanDefinition);
                 if (debug){
-                    SDLogger.addRowGeneratedTable(postfix, fileHelper, result.left() ? "Created" : "Error #" + result.right());
+                    SDLogger.addRowGeneratedTable(postfix, fileHelper, result.left() ? fileCondition : "Error #" + result.right());
                 }
             }
         } else {

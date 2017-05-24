@@ -11,9 +11,12 @@ public class Constants {
     public static final String MAGANER_PACKAGE = "manager-package";
     public static final String MANAGER_POSTFIX = "manager-postfix";
     public static final String ONLY_ANNOTATIONS = "only-annotations";
+    public static final String OVERWRITE = "overwrite";
+
     public static final String PROJECT_NAME = "Spring Data Generator";
 
-    public static final String VERSION = "(v1.1.0)";
+    public static final String VERSION = "(v1.1.2)";
+
     public static final String TABLE_POSTFIX_COLUMN = "Postfix";
 
     public static final String TABLE_FILE_COLUMN = "File Name";

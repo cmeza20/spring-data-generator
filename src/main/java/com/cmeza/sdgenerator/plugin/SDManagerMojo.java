@@ -26,6 +26,11 @@ public class SDManagerMojo extends CommonsMojo{
 
         try {
             CustomResourceLoader resourceLoader = new CustomResourceLoader(project);
+            resourceLoader = new CustomResourceLoader(project);
+            resourceLoader.setPostfix(managerPostfix);
+            resourceLoader.setRepositoryPackage(repositoryPackage);
+            resourceLoader.setRepositoryPostfix(repositoryPostfix);
+            resourceLoader.setOverwrite(overwrite);
 
             String absolutePath = GeneratorUtils.getAbsolutePath(managerPackage);
             if (absolutePath == null){
@@ -35,7 +40,7 @@ public class SDManagerMojo extends CommonsMojo{
 
             ScanningConfigurationSupport scanningConfigurationSupport = new ScanningConfigurationSupport(entityPackage, onlyAnnotations);
 
-            ManagerTemplateSupport managerTemplateSupport = new ManagerTemplateSupport(managerPostfix, repositoryPackage, repositoryPostfix);
+            ManagerTemplateSupport managerTemplateSupport = new ManagerTemplateSupport(resourceLoader);
             managerTemplateSupport.initializeCreation(absolutePath, managerPackage, scanningConfigurationSupport.getCandidates(resourceLoader));
 
             SDLogger.printGeneratedTables(true);

@@ -17,4 +17,9 @@ public class SDMojoException extends MojoExecutionException {
         SDLogger.printGeneratedTables(true);
     }
 
+    public SDMojoException(String message, Throwable cause) {
+        super(message, cause);
+        SDLogger.printGeneratedTables(true);
+    }
+
 }

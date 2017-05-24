@@ -134,7 +134,7 @@ public class ObjectStructure {
         for (String str : objectImports) {
             concat.append(str);
         }
-        if (objectImports.size() > 0) {
+        if (!objectImports.isEmpty()) {
             concat.append(CommonValues.NEWLINE);
         }
         return concat.toString();
@@ -158,7 +158,7 @@ public class ObjectStructure {
             }
             position++;
         }
-        return objectImplements.size() == 0 ? "" : CommonValues.SPACE.getValue() + ObjectValues.IMPLEMENTS.getValue() + concat.toString();
+        return objectImplements.isEmpty() ? "" : CommonValues.SPACE.getValue() + ObjectValues.IMPLEMENTS.getValue() + concat.toString();
     }
 
     public String getObjectAttributes() {
@@ -166,7 +166,7 @@ public class ObjectStructure {
         for (String str : objectAttributes) {
             concat.append(str);
         }
-        return objectAttributes.size() > 0 ? CommonValues.NEWLINE.getValue() + concat.toString() : "";
+        return !objectAttributes.isEmpty() ? CommonValues.NEWLINE.getValue() + concat.toString() : "";
     }
 
     public int getObjectAttributesSize() {
@@ -183,7 +183,7 @@ public class ObjectStructure {
             }
             position++;
         }
-        return objectMethods.size() > 0 ? CommonValues.NEWLINE.getValue() +concat.toString() : "";
+        return !objectMethods.isEmpty() ? CommonValues.NEWLINE.getValue() +concat.toString() : "";
     }
 
     public String getObjectFunctions() {
@@ -196,7 +196,7 @@ public class ObjectStructure {
             }
             position++;
         }
-        return objectFunctions.size() > 0 ? CommonValues.NEWLINE.getValue() + concat.toString() : "";
+        return !objectFunctions.isEmpty() ? CommonValues.NEWLINE.getValue() + concat.toString() : "";
     }
 
     public String getObjectConstructors() {
@@ -209,7 +209,7 @@ public class ObjectStructure {
             }
             position++;
         }
-        return objectConstructors.size() > 0 ? CommonValues.NEWLINE.getValue() + concat.toString() : "";
+        return !objectConstructors.isEmpty() ? CommonValues.NEWLINE.getValue() + concat.toString() : "";
     }
 
     public String getObjectName() {

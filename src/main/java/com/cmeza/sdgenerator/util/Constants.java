@@ -4,6 +4,7 @@ package com.cmeza.sdgenerator.util;
  * Created by carlos on 01/05/17.
  */
 public class Constants {
+
     public static final String ENTITY_PACKAGE = "entity-package";
     public static final String REPOSITORY_PACKAGE = "repository-package";
     public static final String REPOSITORY_POSTFIX = "repository-postfix";
@@ -13,9 +14,12 @@ public class Constants {
     public static final String OVERWRITE = "overwrite";
 
     public static final String PROJECT_NAME = "Spring Data Generator";
-    public static final String VERSION = "(v1.1.1)";
+
+    public static final String VERSION = "(v1.1.2)";
 
     public static final String TABLE_POSTFIX_COLUMN = "Postfix";
+
     public static final String TABLE_FILE_COLUMN = "File Name";
     public static final String TABLE_RESULT_COLUMN = "Result";
+    private Constants(){}
 }

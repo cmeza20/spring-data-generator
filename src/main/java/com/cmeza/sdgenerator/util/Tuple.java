@@ -31,4 +31,14 @@ public class Tuple<X extends Comparable<? super X>, Y extends Comparable<? super
             return this.y.compareTo(o.y);
         return d;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

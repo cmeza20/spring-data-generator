@@ -13,6 +13,9 @@ import java.util.Set;
  */
 public class BuildUtils {
 
+    private BuildUtils() {
+    }
+
     public static String cleanSpaces(String str) {
         return str.replace(" ", "");
     }
@@ -32,15 +35,17 @@ public class BuildUtils {
     public static String builDiamond(String objectClass, Object... objects) {
 
         if (objects != null && objects.length > 0) {
-            String diamondString = cleanSpaces(objectClass) + CommonValues.DIAMOND_START;
+            StringBuilder diamondString = new StringBuilder();
+            diamondString.append(cleanSpaces(objectClass));
+            diamondString.append(CommonValues.DIAMOND_START);
             for(Object obj: objects) {
-                diamondString += cleanSpaces(String.valueOf(obj));
+                diamondString.append(cleanSpaces(String.valueOf(obj)));
                 if (!String.valueOf(objects[objects.length - 1]).equals(String.valueOf(obj))) {
-                    diamondString += CommonValues.COMA;
+                    diamondString.append(CommonValues.COMA);
                 }
             }
-            diamondString += CommonValues.DIAMOND_END;
-            return diamondString;
+            diamondString.append(CommonValues.DIAMOND_END);
+            return diamondString.toString();
         }
 
         return cleanSpaces(objectClass);
@@ -84,7 +89,7 @@ public class BuildUtils {
                 .append(CommonValues.PARENTHESIS);
 
 
-        if (arguments != null & arguments.size() > 0) {
+        if (arguments != null && !arguments.isEmpty()) {
             int position = 0;
             for (Pair<Object, Object> obj : arguments) {
                 constructor.append(obj.getKey())

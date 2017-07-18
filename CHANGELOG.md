@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.1.3] - 2017-07-17
+### Added
+- Getter method annotated with @Id
+- Support @EmbeddedId annotation
+
 ## [1.1.2] - 2017-05-23
 ### Optimization
 - Code optimization with Sonar

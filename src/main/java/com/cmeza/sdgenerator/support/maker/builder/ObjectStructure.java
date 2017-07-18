@@ -40,12 +40,16 @@ public class ObjectStructure {
     }
 
     public ObjectStructure setPackage(String objectPackage) {
-        this.objectPackage = BuildUtils.buildPackage(objectPackage);
+        if (!objectPackage.isEmpty()) {
+            this.objectPackage = BuildUtils.buildPackage(objectPackage);
+        }
         return this;
     }
 
     public ObjectStructure addImport(String objectImport) {
-        this.objectImports.add(BuildUtils.buildImport(objectImport));
+        if (!objectImport.isEmpty()) {
+            this.objectImports.add(BuildUtils.buildImport(objectImport));
+        }
         return this;
     }
 
@@ -57,7 +61,9 @@ public class ObjectStructure {
     }
 
     public ObjectStructure addAnnotation(String annotation) {
-        this.objectAnnotations.add(BuildUtils.buildAnnotation(annotation));
+        if (!annotation.isEmpty()) {
+            this.objectAnnotations.add(BuildUtils.buildAnnotation(annotation));
+        }
         return this;
     }
 
@@ -98,7 +104,9 @@ public class ObjectStructure {
     }
 
     public ObjectStructure addConstructor(ObjectConstructor objectConstructor) {
-        this.objectConstructors.add(objectConstructor);
+        if (objectConstructor != null) {
+            this.objectConstructors.add(objectConstructor);
+        }
         return this;
     }
 

@@ -87,7 +87,8 @@ public class ObjectStructure {
     }
 
     public ObjectStructure setExtend(String objectExtend, Object... objects) {
-        this.objectExtend = BuildUtils.builDiamond(objectExtend, objects);
+    	String extend = BuildUtils.builDiamond(objectExtend, objects);
+    	this.objectExtend = (this.objectExtend.equals("")) ? extend : this.objectExtend + ", " + extend; 
         return this;
     }
 

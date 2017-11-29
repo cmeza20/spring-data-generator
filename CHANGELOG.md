@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.4] - 2017-11-29
+### Added
+- Support JpaSpecificationExcecutor<?> in generated JpaRepository
+
 ## [1.1.3] - 2017-07-17
 ### Added
 - Getter method annotated with @Id
@@ -23,6 +27,7 @@
 ### Added
 - Generate in Runtime
 
+[1.1.4]: https://github.com/cmeza20/spring-data-generator/compare/1.1.3...1.1.4
 [1.1.3]: https://github.com/cmeza20/spring-data-generator/compare/1.1.2...1.1.3
 [1.1.2]: https://github.com/cmeza20/spring-data-generator/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/cmeza20/spring-data-generator/compare/1.1.0...1.1.1

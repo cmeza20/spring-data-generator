@@ -129,7 +129,7 @@ Generate a repository interface example in `com.acme.repositories`:
 
 ```java
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Long> {
+public interface AccountRepository extends JpaRepository<Account, Long>, JpaSpecificationExecutor<Account> {
 }
 ```
 

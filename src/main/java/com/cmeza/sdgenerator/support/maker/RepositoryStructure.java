@@ -30,10 +30,12 @@ public class RepositoryStructure {
                     new ObjectStructure(repositoryPackage, ScopeValues.PUBLIC, ObjectTypeValues.INTERFACE, repositoryName)
                             .addImport(entityClass)
                             .addImport("org.springframework.data.jpa.repository.JpaRepository")
+                            .addImport("org.springframework.data.jpa.repository.JpaSpecificationExecutor")
                             .addImport("org.springframework.stereotype.Repository")
                             .addImport(entityId.right() ? entityId.left() : "")
                             .addAnnotation("Repository")
                             .setExtend("JpaRepository", entityName, GeneratorUtils.getSimpleClassName(entityId.left()))
+                            .setExtend("JpaSpecificationExecutor", entityName)
             );
         }
     }

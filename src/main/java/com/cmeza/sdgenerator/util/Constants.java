@@ -15,7 +15,7 @@ public class Constants {
 
     public static final String PROJECT_NAME = "Spring Data Generator";
 
-    public static final String VERSION = "(v1.1.3)";
+    public static final String VERSION = "(v1.1.4)";
 
     public static final String TABLE_POSTFIX_COLUMN = "Postfix";
 

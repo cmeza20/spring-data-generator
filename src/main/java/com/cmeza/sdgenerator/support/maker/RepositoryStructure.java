@@ -50,19 +50,21 @@ public class RepositoryStructure {
                 entity = loader.getUrlClassLoader().loadClass(entityClass);
             }
 
-            for (Field field : entity.getDeclaredFields()) {
-
-                if (field.isAnnotationPresent(Id.class) || field.isAnnotationPresent(EmbeddedId.class)) {
-                    this.implementsSerializable(field.getType());
-                    return new Tuple<>(field.getType().getName(), this.isCustomType(field.getType()));
+            while (entity != null){
+                for (Field field : entity.getDeclaredFields()) {
+                    if (field.isAnnotationPresent(Id.class) || field.isAnnotationPresent(EmbeddedId.class)) {
+                        this.implementsSerializable(field.getType());
+                        return new Tuple<>(field.getType().getName(), this.isCustomType(field.getType()));
+                    }
                 }
-            }
 
-            for (Method method : entity.getDeclaredMethods()) {
-                if (!method.getReturnType().equals(Void.TYPE) && (method.isAnnotationPresent(Id.class) || method.isAnnotationPresent(EmbeddedId.class))) {
-                    this.implementsSerializable(method.getReturnType());
-                    return new Tuple<>(method.getReturnType().getName(), this.isCustomType(method.getReturnType()));
+                for (Method method : entity.getDeclaredMethods()) {
+                    if (!method.getReturnType().equals(Void.TYPE) && (method.isAnnotationPresent(Id.class) || method.isAnnotationPresent(EmbeddedId.class))) {
+                        this.implementsSerializable(method.getReturnType());
+                        return new Tuple<>(method.getReturnType().getName(), this.isCustomType(method.getReturnType()));
+                    }
                 }
+                entity = entity.getSuperclass();
             }
 
             error = SDLogger.addError("Repository Error: Primary key not found in " + GeneratorUtils.getSimpleClassName(entityClass) + ".java");

@@ -22,7 +22,7 @@ Download the jar through Maven:
 <dependency>
   <groupId>com.cmeza</groupId>
   <artifactId>spring-data-generator</artifactId>
-  <version>1.1.4</version>
+  <version>1.1.5</version>
 </dependency>
 ```
 
@@ -67,7 +67,7 @@ Download the jar through Maven:
 		<plugin>
 			<groupId>com.cmeza</groupId>
 			<artifactId>spring-data-generator</artifactId>
-			<version>1.1.4</version>
+			<version>1.1.5</version>
 			<configuration>
 				<entity-package>
 				    <param>com.acme.model</param>
@@ -139,12 +139,12 @@ Generate a manager class example in `com.acme.managers`:
 @Component
 public class AccountManager {
     
+    private AccountRepository accountRepository;
+    
     @Autowired
     public AccountManager(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
-    }
-   
-    private AccountRepository accountRepository;
+    }   
 }
 ```
 

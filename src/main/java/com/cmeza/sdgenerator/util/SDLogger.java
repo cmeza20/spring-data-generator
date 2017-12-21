@@ -4,12 +4,15 @@ import com.cmeza.sdgenerator.annotation.SDGenerator;
 import de.vandermeer.asciitable.AT_Row;
 import de.vandermeer.asciitable.AsciiTable;
 import de.vandermeer.asciitable.CWC_LongestWordMin;
+import de.vandermeer.asciithemes.a7.A7_Grids;
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Created by carlos on 23/04/17.
@@ -71,6 +74,20 @@ public class SDLogger {
         printGenericTable("Warnings", warns);
     }
 
+    private static void br() {
+        br(1);
+    }
+
+    private static void br(int iterate) {
+        IntStream.iterate(0, i -> i++).limit(iterate).forEach(j ->{
+            if (mavenLogger == null) {
+                commonsLogger.info(StringUtils.EMPTY);
+                return;
+            }
+            mavenLogger.info(StringUtils.EMPTY);
+        });
+    }
+
     private static void printGenericTable(String title, List<String> messages) {
         AsciiTable table = new AsciiTable();
         table.addRule();
@@ -84,6 +101,7 @@ public class SDLogger {
             count ++;
         }
 
+        table.getContext().setGrid(A7_Grids.minusBarPlusEquals());
         table.getRenderer().setCWC(new CWC_LongestWordMin(new int[]{5, 101}));
         table.renderAsCollection().forEach(SDLogger::info);
     }
@@ -111,21 +129,24 @@ public class SDLogger {
         }
 
         if (generatedTable != null) {
+            br();
             printBanner();
-            info("");
+            br();
             if (generated > 0) {
                 addRowGeneratedTable( null, null, generated + " files generated");
             } else {
                 addRowGeneratedTable( null, null, "No files generated");
             }
             generatedTable.addRule();
+            generatedTable.getContext().setGrid(A7_Grids.minusBarPlusEquals());
             generatedTable.getRenderer().setCWC(new CWC_LongestWordMin(new int[]{20, 68, 17}));
             generatedTable.renderAsCollection().forEach(SDLogger::info);
 
-            info("");
+            br();
 
             if (!warns.isEmpty()) {
                 printWarns();
+                br(2);
             }
 
         }else {
@@ -133,9 +154,9 @@ public class SDLogger {
         }
 
         if (!errors.isEmpty()) {
-            info("");
+            br();
             printErrors();
-            info("");
+            br(2);
         }
     }
 

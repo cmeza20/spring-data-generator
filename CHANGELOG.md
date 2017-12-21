@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.1.5] - 2017-12-21
+### Fix
+- Fix @Id or @EmbeddedId inherited from a superclass
+- Fix table info
+
 ## [1.1.4] - 2017-11-29
 ### Added
 - Support JpaSpecificationExcecutor<?> in generated JpaRepository
@@ -27,6 +32,7 @@
 ### Added
 - Generate in Runtime
 
+[1.1.5]: https://github.com/cmeza20/spring-data-generator/compare/1.1.4...1.1.5
 [1.1.4]: https://github.com/cmeza20/spring-data-generator/compare/1.1.3...1.1.4
 [1.1.3]: https://github.com/cmeza20/spring-data-generator/compare/1.1.2...1.1.3
 [1.1.2]: https://github.com/cmeza20/spring-data-generator/compare/1.1.1...1.1.2

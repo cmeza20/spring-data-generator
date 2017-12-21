@@ -35,7 +35,7 @@ public class ManagerStructure {
                         .addArgument(repositoryName, repositoryNameAttribute)
                         .addBodyLine(ObjectValues.THIS.getValue() + repositoryNameAttribute + ExpressionValues.EQUAL.getValue() + repositoryNameAttribute)
                 )
-        ).setAttributeBottom(true);
+        ).setAttributeBottom(false);
 
     }
 

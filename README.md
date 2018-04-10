@@ -22,7 +22,7 @@ Download the jar through Maven:
 <dependency>
   <groupId>com.cmeza</groupId>
   <artifactId>spring-data-generator</artifactId>
-  <version>1.1.5</version>
+  <version>1.1.6</version>
 </dependency>
 ```
 
@@ -67,7 +67,7 @@ Download the jar through Maven:
 		<plugin>
 			<groupId>com.cmeza</groupId>
 			<artifactId>spring-data-generator</artifactId>
-			<version>1.1.5</version>
+			<version>1.1.6</version>
 			<configuration>
 				<entity-package>
 				    <param>com.acme.model</param>
@@ -115,7 +115,7 @@ public class Account {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
     private String firstname;
     private String lastname;
        

@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.6] - 2018-04-09
+### Added
+- @Id or @EmbeddedId primitive support
+
 ## [1.1.5] - 2017-12-21
 ### Fix
 - Fix @Id or @EmbeddedId inherited from a superclass
@@ -32,6 +36,7 @@
 ### Added
 - Generate in Runtime
 
+[1.1.6]: https://github.com/cmeza20/spring-data-generator/compare/1.1.5...1.1.6
 [1.1.5]: https://github.com/cmeza20/spring-data-generator/compare/1.1.4...1.1.5
 [1.1.4]: https://github.com/cmeza20/spring-data-generator/compare/1.1.3...1.1.4
 [1.1.3]: https://github.com/cmeza20/spring-data-generator/compare/1.1.2...1.1.3

@@ -8,9 +8,10 @@ import com.cmeza.sdgenerator.util.*;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by carlos on 08/04/17.
@@ -20,6 +21,17 @@ public class RepositoryStructure {
     private CustomResourceLoader loader;
     private ObjectBuilder objectBuilder;
     private Integer error = 0;
+    private final static Map<Class<?>, Class<?>> mapConvert = new HashMap<>();
+    static {
+        mapConvert.put(boolean.class, Boolean.class);
+        mapConvert.put(byte.class, Byte.class);
+        mapConvert.put(short.class, Short.class);
+        mapConvert.put(char.class, Character.class);
+        mapConvert.put(int.class, Integer.class);
+        mapConvert.put(long.class, Long.class);
+        mapConvert.put(float.class, Float.class);
+        mapConvert.put(double.class, Double.class);
+    }
 
     public RepositoryStructure(String repositoryPackage, String entityName, String entityClass, String postfix, CustomResourceLoader loader) {
         this.loader = loader;
@@ -43,7 +55,7 @@ public class RepositoryStructure {
     @SuppressWarnings("unchecked")
     private Tuple<String, Boolean> getEntityId(String entityClass){
         try {
-            Class<?> entity = null;
+            Class<?> entity;
             if (loader == null) {
                 entity = Class.forName(entityClass);
             } else {
@@ -53,15 +65,21 @@ public class RepositoryStructure {
             while (entity != null){
                 for (Field field : entity.getDeclaredFields()) {
                     if (field.isAnnotationPresent(Id.class) || field.isAnnotationPresent(EmbeddedId.class)) {
-                        this.implementsSerializable(field.getType());
-                        return new Tuple<>(field.getType().getName(), this.isCustomType(field.getType()));
+                        Class<?> dataType = field.getType();
+                        if (field.getType().isPrimitive()) {
+                            dataType = this.primitiveToObject(field.getType());
+                        }
+                        return new Tuple<>(dataType.getName(), this.isCustomType(dataType));
                     }
                 }
 
                 for (Method method : entity.getDeclaredMethods()) {
                     if (!method.getReturnType().equals(Void.TYPE) && (method.isAnnotationPresent(Id.class) || method.isAnnotationPresent(EmbeddedId.class))) {
-                        this.implementsSerializable(method.getReturnType());
-                        return new Tuple<>(method.getReturnType().getName(), this.isCustomType(method.getReturnType()));
+                        Class<?> dataType = method.getReturnType();
+                        if (method.getReturnType().isPrimitive()) {
+                            dataType = this.primitiveToObject(method.getReturnType());
+                        }
+                        return new Tuple<>(dataType.getName(), this.isCustomType(dataType));
                     }
                 }
                 entity = entity.getSuperclass();
@@ -83,21 +101,21 @@ public class RepositoryStructure {
     }
 
     private boolean isCustomType(Class<?> clazz) {
-        if (clazz.isAssignableFrom(Boolean.class) ||
-                clazz.isAssignableFrom(Byte.class) ||
-                clazz.isAssignableFrom(String.class) ||
-                clazz.isAssignableFrom(Integer.class) ||
-                clazz.isAssignableFrom(Long.class) ||
-                clazz.isAssignableFrom(Float.class) ||
-                clazz.isAssignableFrom(Double.class)){
-            return false;
-        }
-        return true;
+        return  !clazz.isAssignableFrom(Boolean.class) &&
+                !clazz.isAssignableFrom(Byte.class) &&
+                !clazz.isAssignableFrom(String.class) &&
+                !clazz.isAssignableFrom(Integer.class) &&
+                !clazz.isAssignableFrom(Long.class) &&
+                !clazz.isAssignableFrom(Float.class) &&
+                !clazz.isAssignableFrom(Double.class);
     }
 
-    private void implementsSerializable(Class<?> clazz) throws GeneratorException{
-        if (!Serializable.class.isAssignableFrom(clazz)) {
-            throw new GeneratorException("Type parameter '" + clazz.getName() + "' should implement 'java.io.Serializable'");
+    private Class<?> primitiveToObject(Class<?> clazz) {
+        Class<?> convertResult = mapConvert.get(clazz);
+        if (convertResult == null) {
+            throw new GeneratorException("Type parameter '" + clazz.getName() + "' is incorrect");
         }
+        return convertResult;
     }
+
 }

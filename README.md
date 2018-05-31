@@ -9,6 +9,10 @@ Spring Data Generator for JPA repositories and managers.
 * Generate managers for JPA Entities
 * EntityScan wrapped annotation
 * Overwrite option
+* Support JpaSpecificationExcecutor<?>
+* Support @EmbeddedId annotation
+* @Id or @EmbeddedId primitive support
+* Package structure support
 
 ## Dependencies ##
 
@@ -22,7 +26,7 @@ Download the jar through Maven:
 <dependency>
   <groupId>com.cmeza</groupId>
   <artifactId>spring-data-generator</artifactId>
-  <version>1.1.6</version>
+  <version>1.1.7</version>
 </dependency>
 ```
 
@@ -67,7 +71,7 @@ Download the jar through Maven:
 		<plugin>
 			<groupId>com.cmeza</groupId>
 			<artifactId>spring-data-generator</artifactId>
-			<version>1.1.6</version>
+			<version>1.1.7</version>
 			<configuration>
 				<entity-package>
 				    <param>com.acme.model</param>

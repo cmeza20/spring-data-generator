@@ -38,7 +38,7 @@ public class SDRepositoryMojo extends CommonsMojo{
             ScanningConfigurationSupport scanningConfigurationSupport = new ScanningConfigurationSupport(entityPackage, onlyAnnotations);
 
             RepositoryTemplateSupport repositoryTemplateSupport = new RepositoryTemplateSupport(resourceLoader);
-            repositoryTemplateSupport.initializeCreation(absolutePath, repositoryPackage, scanningConfigurationSupport.getCandidates(resourceLoader));
+            repositoryTemplateSupport.initializeCreation(absolutePath, repositoryPackage, scanningConfigurationSupport.getCandidates(resourceLoader), entityPackage);
 
             SDLogger.printGeneratedTables(true);
 

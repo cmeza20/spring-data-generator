@@ -41,7 +41,7 @@ public class SDManagerMojo extends CommonsMojo{
             ScanningConfigurationSupport scanningConfigurationSupport = new ScanningConfigurationSupport(entityPackage, onlyAnnotations);
 
             ManagerTemplateSupport managerTemplateSupport = new ManagerTemplateSupport(resourceLoader);
-            managerTemplateSupport.initializeCreation(absolutePath, managerPackage, scanningConfigurationSupport.getCandidates(resourceLoader));
+            managerTemplateSupport.initializeCreation(absolutePath, managerPackage, scanningConfigurationSupport.getCandidates(resourceLoader), entityPackage);
 
             SDLogger.printGeneratedTables(true);
 

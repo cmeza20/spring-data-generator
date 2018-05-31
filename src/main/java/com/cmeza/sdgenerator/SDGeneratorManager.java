@@ -6,6 +6,7 @@ import com.cmeza.sdgenerator.support.RepositoryTemplateSupport;
 import com.cmeza.sdgenerator.support.ScanningConfigurationSupport;
 import com.cmeza.sdgenerator.util.GeneratorUtils;
 import com.cmeza.sdgenerator.util.SDLogger;
+import com.google.common.collect.Iterables;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
@@ -70,7 +71,7 @@ public class SDGeneratorManager implements ImportBeanDefinitionRegistrar, Enviro
                     String repositoriesPath = absolutePath + repositoryPackage.replace(".", "/");
 
                     RepositoryTemplateSupport repositoryTemplateSupport = new RepositoryTemplateSupport(attributes);
-                    repositoryTemplateSupport.initializeCreation(repositoriesPath, repositoryPackage, candidates);
+                    repositoryTemplateSupport.initializeCreation(repositoriesPath, repositoryPackage, candidates, Iterables.toArray(configurationSource.getBasePackages(), String.class));
                 }
 
                 if (!repositoryPackage.isEmpty() && !managerPackage.isEmpty()) {
@@ -80,7 +81,7 @@ public class SDGeneratorManager implements ImportBeanDefinitionRegistrar, Enviro
                     String repositoryPostfix = attributes.getString("repositoryPostfix");
 
                     ManagerTemplateSupport managerTemplateSupport = new ManagerTemplateSupport(attributes, repositoryPackage, repositoryPostfix);
-                    managerTemplateSupport.initializeCreation(managerPath, managerPackage, candidates);
+                    managerTemplateSupport.initializeCreation(managerPath, managerPackage, candidates, Iterables.toArray(configurationSource.getBasePackages(), String.class));
                 }
 
                 SDLogger.printGeneratedTables(attributes.getBoolean("debug"));

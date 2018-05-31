@@ -7,13 +7,13 @@ import com.cmeza.sdgenerator.util.Tuple;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Created by carlos on 08/04/17.
@@ -46,19 +46,21 @@ public abstract class AbstractTemplateProvider {
         this.overwrite = customResourceLoader.isOverwrite();
     }
 
-    public void initializeCreation(String path, String ePackage, Collection<BeanDefinition> candidates) {
+    public void initializeCreation(String path, String ePackage, Collection<BeanDefinition> candidates, String[] entityPackage) {
         int generatedCount = 0;
-        
+
         if(!GeneratorUtils.verifyPackage(path)){
             return;
         }
+
+        Arrays.sort(entityPackage, Comparator.comparingInt((c) -> c.length()));
 
         for (BeanDefinition beanDefinition : candidates) {
             if (verifyEntityNonExclude(beanDefinition.getBeanClassName())){
                 continue;
             }
 
-            if (createHelper(path, beanDefinition, postfix, ePackage)) {
+            if (createHelper(path, beanDefinition, postfix, ePackage, entityPackage)) {
                 generatedCount++;
             }
         }
@@ -96,13 +98,18 @@ public abstract class AbstractTemplateProvider {
         return Arrays.stream(excludeClasses).anyMatch(b -> b.getName().equals(beanClassName));
     }
 
-    private boolean createHelper(String path, BeanDefinition beanDefinition, String postfix, String repositoryPackage){
+    private boolean createHelper(String path, BeanDefinition beanDefinition, String postfix, String repositoryPackage, String[] entityPackage){
         String simpleClassName = GeneratorUtils.getSimpleClassName(beanDefinition.getBeanClassName());
         Tuple<Boolean, Integer> result = null;
         if(simpleClassName != null){
 
             String fileHelper = simpleClassName + postfix + ".java";
-            String filePath = path + "/" + fileHelper;
+            String additionalPath = this.getAdditionalPath(entityPackage, beanDefinition,  simpleClassName, path);
+            if (!StringUtils.isEmpty(additionalPath)) {
+                repositoryPackage += "." + additionalPath;
+                additionalPath = additionalPath.replace(".", "/") + "/";
+            }
+            String filePath = path + "/" + additionalPath + fileHelper;
 
             Tuple<Boolean, Integer> verifyInclude = verifyIncludeFilter(simpleClassName);
             if (!verifyInclude.left()) {
@@ -133,8 +140,8 @@ public abstract class AbstractTemplateProvider {
 
     protected abstract Tuple<String, Integer> getContentFromTemplate(String mPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition);
 
-    private Tuple<Boolean, Integer> createFileFromTemplate(String path, String repositoryPAckage, String simpleClassName, String postfix, BeanDefinition beanDefinition){
-        Tuple<String, Integer> content = getContentFromTemplate(repositoryPAckage, simpleClassName, postfix, beanDefinition);
+    private Tuple<Boolean, Integer> createFileFromTemplate(String path, String repositoryPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition){
+        Tuple<String, Integer> content = getContentFromTemplate(repositoryPackage, simpleClassName, postfix, beanDefinition);
         if (content.left() == null) {
             return new Tuple<>(false, content.right());
         }
@@ -150,4 +157,30 @@ public abstract class AbstractTemplateProvider {
     protected abstract String getExcludeClasses();
     protected abstract String getPostfix();
 
+    private String getAdditionalPath(String[] entityPackages, BeanDefinition beanDefinition, String filename, String path) {
+        List<String> additionalFolders = new ArrayList<>();
+        for (String entityPackage : entityPackages) {
+            if (beanDefinition.getBeanClassName().startsWith(entityPackage)) {
+                String stack = beanDefinition.getBeanClassName().replace(entityPackage, "").replace(filename, "");
+                if (stack.length() > 1) {
+                    if (stack.startsWith(".")) {
+                        stack = stack.substring(1);
+                    }
+                    if (stack.endsWith(".")) {
+                        stack = stack.substring(0, stack.length() - 1);
+                    }
+                    additionalFolders.add(stack);
+                }
+            }
+        }
+
+        if (!additionalFolders.isEmpty()) {
+            additionalFolders.sort((a, b)-> Integer.compare(b.length(), a.length()));
+            String additional = path + "/" + additionalFolders.get(0);
+            String pathAdditional = additional.replace(".", "/");
+            GeneratorUtils.verifyPackage(pathAdditional);
+            return additionalFolders.get(0);
+        }
+        return "";
+    }
 }

@@ -18,14 +18,15 @@ public class ManagerStructure {
 
     private ObjectBuilder objectBuilder;
 
-    public ManagerStructure(String managerPackage, String entityName, String postfix, String repositoryPackage, String repositoryPostfix) {
+    public ManagerStructure(String managerPackage, String entityName, String entityClass, String postfix, String repositoryPackage, String repositoryPostfix) {
 
         String managerName = entityName + postfix;
         String repositoryName = entityName + repositoryPostfix;
         String repositoryNameAttribute = GeneratorUtils.decapitalize(repositoryName);
 
         this.objectBuilder = new ObjectBuilder(new ObjectStructure(managerPackage, ScopeValues.PUBLIC, ObjectTypeValues.CLASS, managerName)
-                .addImport(repositoryPackage + "." + repositoryName)
+//                .addImport(repositoryPackage + "." + repositoryName)
+                .addImport(entityClass)
                 .addImport(Autowired.class)
                 .addImport(Component.class)
                 .addAnnotation(Component.class)

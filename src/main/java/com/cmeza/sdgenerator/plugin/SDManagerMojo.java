@@ -26,7 +26,6 @@ public class SDManagerMojo extends CommonsMojo{
 
         try {
             CustomResourceLoader resourceLoader = new CustomResourceLoader(project);
-            resourceLoader = new CustomResourceLoader(project);
             resourceLoader.setPostfix(managerPostfix);
             resourceLoader.setRepositoryPackage(repositoryPackage);
             resourceLoader.setRepositoryPostfix(repositoryPostfix);

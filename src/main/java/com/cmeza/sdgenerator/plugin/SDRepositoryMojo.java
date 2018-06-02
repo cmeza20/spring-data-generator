@@ -22,10 +22,10 @@ public class SDRepositoryMojo extends CommonsMojo{
 
         this.validateField(Constants.ENTITY_PACKAGE);
         this.validateField(Constants.REPOSITORY_PACKAGE);
+        this.validateField(Constants.ADD_EXTEND);
 
         try {
             CustomResourceLoader resourceLoader = new CustomResourceLoader(project);
-            resourceLoader = new CustomResourceLoader(project);
             resourceLoader.setPostfix(repositoryPostfix);
             resourceLoader.setOverwrite(overwrite);
 
@@ -37,7 +37,7 @@ public class SDRepositoryMojo extends CommonsMojo{
 
             ScanningConfigurationSupport scanningConfigurationSupport = new ScanningConfigurationSupport(entityPackage, onlyAnnotations);
 
-            RepositoryTemplateSupport repositoryTemplateSupport = new RepositoryTemplateSupport(resourceLoader);
+            RepositoryTemplateSupport repositoryTemplateSupport = new RepositoryTemplateSupport(resourceLoader, additionalExtend);
             repositoryTemplateSupport.initializeCreation(absolutePath, repositoryPackage, scanningConfigurationSupport.getCandidates(resourceLoader), entityPackage);
 
             SDLogger.printGeneratedTables(true);

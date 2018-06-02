@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by carlos on 08/04/17.
@@ -33,22 +34,29 @@ public class RepositoryStructure {
         mapConvert.put(double.class, Double.class);
     }
 
-    public RepositoryStructure(String repositoryPackage, String entityName, String entityClass, String postfix, CustomResourceLoader loader) {
+    public RepositoryStructure(String repositoryPackage, String entityName, String entityClass, String postfix, CustomResourceLoader loader, Set<String> additionalExtends) {
         this.loader = loader;
         String repositoryName = entityName + postfix;
         Tuple<String, Boolean> entityId = getEntityId(entityClass);
         if(entityId != null) {
-            this.objectBuilder = new ObjectBuilder(
-                    new ObjectStructure(repositoryPackage, ScopeValues.PUBLIC, ObjectTypeValues.INTERFACE, repositoryName)
-                            .addImport(entityClass)
-                            .addImport("org.springframework.data.jpa.repository.JpaRepository")
-                            .addImport("org.springframework.data.jpa.repository.JpaSpecificationExecutor")
-                            .addImport("org.springframework.stereotype.Repository")
-                            .addImport(entityId.right() ? entityId.left() : "")
-                            .addAnnotation("Repository")
-                            .setExtend("JpaRepository", entityName, GeneratorUtils.getSimpleClassName(entityId.left()))
-                            .setExtend("JpaSpecificationExecutor", entityName)
-            );
+
+            ObjectStructure objectStructure = new ObjectStructure(repositoryPackage, ScopeValues.PUBLIC, ObjectTypeValues.INTERFACE, repositoryName)
+                    .addImport(entityClass)
+                    .addImport("org.springframework.data.jpa.repository.JpaRepository")
+                    .addImport("org.springframework.data.jpa.repository.JpaSpecificationExecutor")
+                    .addImport("org.springframework.stereotype.Repository")
+                    .addImport(entityId.right() ? entityId.left() : "")
+                    .addAnnotation("Repository")
+                    .addExtend("JpaRepository", entityName, GeneratorUtils.getSimpleClassName(entityId.left()))
+                    .addExtend("JpaSpecificationExecutor", entityName);
+
+            if (additionalExtends != null) {
+                for(String additionalExtend : additionalExtends) {
+                    objectStructure.addImport(additionalExtend);
+                    objectStructure.addExtend(GeneratorUtils.getSimpleClassName(additionalExtend), entityName);
+                }
+            }
+            this.objectBuilder = new ObjectBuilder(objectStructure);
         }
     }
 

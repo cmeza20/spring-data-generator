@@ -56,6 +56,7 @@ public abstract class AbstractTemplateProvider {
         Arrays.sort(entityPackage, Comparator.comparingInt((c) -> c.length()));
 
         for (BeanDefinition beanDefinition : candidates) {
+
             if (verifyEntityNonExclude(beanDefinition.getBeanClassName())){
                 continue;
             }
@@ -77,8 +78,8 @@ public abstract class AbstractTemplateProvider {
     }
 
     private Tuple<Boolean, Integer> verifyIncludeFilter(String beanDefinitionName) {
-
         int warnPosition = 0;
+
         if (includeFilter == null) {
             return new Tuple<>(Boolean.TRUE, warnPosition);
         }

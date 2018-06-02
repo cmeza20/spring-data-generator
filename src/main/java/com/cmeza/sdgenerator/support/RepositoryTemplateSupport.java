@@ -7,25 +7,29 @@ import com.cmeza.sdgenerator.util.Tuple;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.annotation.AnnotationAttributes;
 
+import java.util.Set;
+
 /**
  * Created by carlos on 08/04/17.
  */
 public class RepositoryTemplateSupport extends AbstractTemplateProvider {
 
     private CustomResourceLoader loader;
+    private Set<String> additionalExtends;
 
     public RepositoryTemplateSupport(AnnotationAttributes attributes) {
         super(attributes);
     }
 
-    public RepositoryTemplateSupport(CustomResourceLoader loader) {
+    public RepositoryTemplateSupport(CustomResourceLoader loader, Set<String> additionalExtends) {
         super(loader);
         this.loader = loader;
+        this.additionalExtends = additionalExtends;
     }
 
     @Override
     protected Tuple<String, Integer> getContentFromTemplate(String repositoryPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition) {
-        return new RepositoryStructure(repositoryPackage, simpleClassName, beanDefinition.getBeanClassName(), postfix, loader).build();
+        return new RepositoryStructure(repositoryPackage, simpleClassName, beanDefinition.getBeanClassName(), postfix, loader, additionalExtends).build();
     }
 
     @Override

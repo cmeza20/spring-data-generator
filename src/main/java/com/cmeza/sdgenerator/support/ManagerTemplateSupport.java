@@ -42,7 +42,7 @@ public class ManagerTemplateSupport extends AbstractTemplateProvider {
 
     @Override
     protected Tuple<String, Integer> getContentFromTemplate(String mPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition) {
-        return new ManagerStructure(mPackage, simpleClassName, postfix, repositoryPackage, repositoryPostfix).build();
+        return new ManagerStructure(mPackage, simpleClassName, beanDefinition.getBeanClassName(), postfix, repositoryPackage, repositoryPostfix).build();
     }
 
     @Override

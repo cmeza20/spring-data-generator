@@ -8,6 +8,10 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  * Created by carlos on 01/05/17.
  */
@@ -34,8 +38,13 @@ public abstract class CommonsMojo extends AbstractMojo {
     @Parameter(name = Constants.OVERWRITE, defaultValue = "false")
     protected Boolean overwrite;
 
+    @Parameter(name = Constants.ADD_EXTEND)
+    protected String[] addExtend;
+
     @Component
     protected MavenProject project;
+
+    protected Set<String> additionalExtend = new LinkedHashSet<>();
 
     public void validateField(String parameter) throws SDMojoException {
 
@@ -65,6 +74,13 @@ public abstract class CommonsMojo extends AbstractMojo {
             case Constants.MANAGER_POSTFIX:
                 if (managerPostfix == null) {
                     errorFound = Boolean.TRUE;
+                }
+                break;
+            case Constants.ADD_EXTEND:
+                if (addExtend == null) {
+                    errorFound = Boolean.TRUE;
+                } else {
+                    additionalExtend.addAll(Arrays.asList(addExtend));
                 }
                 break;
             default:

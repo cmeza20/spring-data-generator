@@ -1,14 +1,11 @@
 package com.cmeza.sdgenerator.plugin;
 
-import com.cmeza.sdgenerator.util.Constants;
-import com.cmeza.sdgenerator.util.SDLogger;
-import com.cmeza.sdgenerator.util.SDMojoException;
+import com.cmeza.sdgenerator.util.*;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -38,13 +35,13 @@ public abstract class CommonsMojo extends AbstractMojo {
     @Parameter(name = Constants.OVERWRITE, defaultValue = "false")
     protected Boolean overwrite;
 
-    @Parameter(name = Constants.ADD_EXTEND)
-    protected String[] addExtend;
+    @Parameter(name = Constants.EXTENDS)
+    protected String[] additionalExtends;
 
     @Component
     protected MavenProject project;
 
-    protected Set<String> additionalExtend = new LinkedHashSet<>();
+    protected Set<String> additionalExtendsList = new LinkedHashSet<>();
 
     public void validateField(String parameter) throws SDMojoException {
 
@@ -76,11 +73,9 @@ public abstract class CommonsMojo extends AbstractMojo {
                     errorFound = Boolean.TRUE;
                 }
                 break;
-            case Constants.ADD_EXTEND:
-                if (addExtend == null) {
-                    errorFound = Boolean.TRUE;
-                } else {
-                    additionalExtend.addAll(Arrays.asList(addExtend));
+            case Constants.EXTENDS:
+                if (additionalExtends != null) {
+                    this.validateExtends();
                 }
                 break;
             default:
@@ -93,4 +88,24 @@ public abstract class CommonsMojo extends AbstractMojo {
             throw new SDMojoException();
         }
     }
+
+    private void validateExtends() throws SDMojoException {
+        String extendTemporal;
+        boolean errorValidate = Boolean.FALSE;
+        for (int i = 0; i < additionalExtends.length; i++) {
+            extendTemporal = additionalExtends[i];
+            SDLogger.addAdditionalExtend(extendTemporal);
+            if (extendTemporal.contains(".")){
+                additionalExtendsList.add(extendTemporal);
+            } else {
+                errorValidate = Boolean.TRUE;
+                SDLogger.addError( String.format("'%s' is not a valid object!", extendTemporal));
+            }
+        }
+
+        if (errorValidate) {
+            throw new SDMojoException();
+        }
+    }
+
 }

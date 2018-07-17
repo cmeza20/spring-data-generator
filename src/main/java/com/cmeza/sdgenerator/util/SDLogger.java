@@ -23,6 +23,7 @@ public class SDLogger {
     private static int generated = 0;
     private static List<String> errors = new ArrayList<>();
     private static List<String> warns = new ArrayList<>();
+    private static List<String> additionalExtend = new ArrayList<>();
     private static AsciiTable generatedTable;
 
     private SDLogger() {
@@ -66,12 +67,21 @@ public class SDLogger {
         return warns.size();
     }
 
+    public static Integer addAdditionalExtend(String ext) {
+        additionalExtend.add(ext);
+        return additionalExtend.size();
+    }
+
     private static void printErrors() {
         printGenericTable("Errors", errors);
     }
 
     private static void printWarns() {
         printGenericTable("Warnings", warns);
+    }
+
+    private static void printAdditionalExtends() {
+        printGenericTable("Additional Extends", additionalExtend);
     }
 
     private static void br() {
@@ -132,6 +142,13 @@ public class SDLogger {
             br();
             printBanner();
             br();
+
+            if (!additionalExtend.isEmpty()) {
+                br();
+                printAdditionalExtends();
+                br(2);
+            }
+
             if (generated > 0) {
                 addRowGeneratedTable( null, null, generated + " files generated");
             } else {

@@ -17,8 +17,9 @@ public class RepositoryTemplateSupport extends AbstractTemplateProvider {
     private CustomResourceLoader loader;
     private Set<String> additionalExtends;
 
-    public RepositoryTemplateSupport(AnnotationAttributes attributes) {
+    public RepositoryTemplateSupport(AnnotationAttributes attributes, Set<String> additionalExtends) {
         super(attributes);
+        this.additionalExtends = additionalExtends;
     }
 
     public RepositoryTemplateSupport(CustomResourceLoader loader, Set<String> additionalExtends) {
@@ -28,7 +29,7 @@ public class RepositoryTemplateSupport extends AbstractTemplateProvider {
     }
 
     @Override
-    protected Tuple<String, Integer> getContentFromTemplate(String repositoryPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition) {
+    protected Tuple<String, Integer> getContentFromTemplate(String repositoryPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition, String additionalPackage) {
         return new RepositoryStructure(repositoryPackage, simpleClassName, beanDefinition.getBeanClassName(), postfix, loader, additionalExtends).build();
     }
 

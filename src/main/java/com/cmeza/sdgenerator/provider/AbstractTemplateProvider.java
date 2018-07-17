@@ -105,9 +105,12 @@ public abstract class AbstractTemplateProvider {
         if(simpleClassName != null){
 
             String fileHelper = simpleClassName + postfix + ".java";
+
             String additionalPath = this.getAdditionalPath(entityPackage, beanDefinition,  simpleClassName, path);
+            String additionalPackage = "";
             if (!StringUtils.isEmpty(additionalPath)) {
                 repositoryPackage += "." + additionalPath;
+                additionalPackage = additionalPath;
                 additionalPath = additionalPath.replace(".", "/") + "/";
             }
             String filePath = path + "/" + additionalPath + fileHelper;
@@ -127,7 +130,7 @@ public abstract class AbstractTemplateProvider {
             }
 
             if (!file.exists()){
-                result = createFileFromTemplate(filePath, repositoryPackage, simpleClassName, postfix, beanDefinition);
+                result = createFileFromTemplate(filePath, repositoryPackage, simpleClassName, postfix, beanDefinition, additionalPackage);
                 if (debug){
                     SDLogger.addRowGeneratedTable(postfix, fileHelper, result.left() ? fileCondition : "Error #" + result.right());
                 }
@@ -139,10 +142,10 @@ public abstract class AbstractTemplateProvider {
         return result == null ? false : result.left();
     }
 
-    protected abstract Tuple<String, Integer> getContentFromTemplate(String mPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition);
+    protected abstract Tuple<String, Integer> getContentFromTemplate(String mPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition, String additionalPackage);
 
-    private Tuple<Boolean, Integer> createFileFromTemplate(String path, String repositoryPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition){
-        Tuple<String, Integer> content = getContentFromTemplate(repositoryPackage, simpleClassName, postfix, beanDefinition);
+    private Tuple<Boolean, Integer> createFileFromTemplate(String path, String repositoryPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition, String additionalPackage){
+        Tuple<String, Integer> content = getContentFromTemplate(repositoryPackage, simpleClassName, postfix, beanDefinition, additionalPackage);
         if (content.left() == null) {
             return new Tuple<>(false, content.right());
         }

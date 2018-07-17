@@ -12,7 +12,7 @@ public class Constants {
     public static final String MANAGER_POSTFIX = "manager-postfix";
     public static final String ONLY_ANNOTATIONS = "only-annotations";
     public static final String OVERWRITE = "overwrite";
-    public static final String ADD_EXTEND = "add-extend";
+    public static final String EXTENDS = "additional-extends";
 
     public static final String PROJECT_NAME = "Spring Data Generator";
 

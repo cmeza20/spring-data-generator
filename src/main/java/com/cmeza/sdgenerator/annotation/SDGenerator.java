@@ -34,4 +34,6 @@ public @interface SDGenerator {
     boolean onlyAnnotations() default false;
 
     boolean overwrite() default false;
+
+    Class<?>[] additionalExtends() default {};
 }

@@ -44,7 +44,7 @@ public class ScanningConfigurationSupport {
     }
 
     @SuppressWarnings("unchecked")
-    private Iterable<String> getBasePackages() {
+    public Iterable<String> getBasePackages() {
 
         if (entityPackage.length == 0) {
             String className = this.annotationMetadata.getClassName();

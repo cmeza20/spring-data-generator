@@ -6,6 +6,7 @@ import com.cmeza.sdgenerator.support.RepositoryTemplateSupport;
 import com.cmeza.sdgenerator.support.ScanningConfigurationSupport;
 import com.cmeza.sdgenerator.util.GeneratorUtils;
 import com.cmeza.sdgenerator.util.SDLogger;
+import com.google.common.collect.Iterables;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
@@ -18,6 +19,8 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.Assert;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Created by carlos on 08/04/17.
@@ -68,9 +71,11 @@ public class SDGeneratorManager implements ImportBeanDefinitionRegistrar, Enviro
                 if (!repositoryPackage.isEmpty()){
 
                     String repositoriesPath = absolutePath + repositoryPackage.replace(".", "/");
-
-                    RepositoryTemplateSupport repositoryTemplateSupport = new RepositoryTemplateSupport(attributes);
-                    repositoryTemplateSupport.initializeCreation(repositoriesPath, repositoryPackage, candidates);
+                    Set<String> additionalExtends = this.validateExtends(attributes.getClassArray("additionalExtends"));
+                    if (additionalExtends != null) {
+                        RepositoryTemplateSupport repositoryTemplateSupport = new RepositoryTemplateSupport(attributes, additionalExtends);
+                        repositoryTemplateSupport.initializeCreation(repositoriesPath, repositoryPackage, candidates, Iterables.toArray(configurationSource.getBasePackages(), String.class));
+                    }
                 }
 
                 if (!repositoryPackage.isEmpty() && !managerPackage.isEmpty()) {
@@ -80,13 +85,36 @@ public class SDGeneratorManager implements ImportBeanDefinitionRegistrar, Enviro
                     String repositoryPostfix = attributes.getString("repositoryPostfix");
 
                     ManagerTemplateSupport managerTemplateSupport = new ManagerTemplateSupport(attributes, repositoryPackage, repositoryPostfix);
-                    managerTemplateSupport.initializeCreation(managerPath, managerPackage, candidates);
+                    managerTemplateSupport.initializeCreation(managerPath, managerPackage, candidates, Iterables.toArray(configurationSource.getBasePackages(), String.class));
                 }
 
                 SDLogger.printGeneratedTables(attributes.getBoolean("debug"));
             }
 
         }
+    }
+
+    private Set<String> validateExtends(Class<?>[] additionalExtends){
+        Class<?> extendTemporal;
+        boolean errorValidate = Boolean.FALSE;
+        Set<String> additionalExtendsList = new LinkedHashSet<>();
+        for (int i = 0; i < additionalExtends.length; i++) {
+            extendTemporal = additionalExtends[i];
+            SDLogger.addAdditionalExtend(extendTemporal.getName());
+
+            if (!extendTemporal.isInterface()) {
+                SDLogger.addError( String.format("'%s' is not a interface!", extendTemporal.getName()));
+                errorValidate = Boolean.TRUE;
+            } else {
+                additionalExtendsList.add(extendTemporal.getName());
+            }
+        }
+
+        if (errorValidate) {
+            return null;
+        }
+
+        return additionalExtendsList;
     }
 
 }

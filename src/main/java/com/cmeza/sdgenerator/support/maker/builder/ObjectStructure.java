@@ -6,9 +6,9 @@ import com.cmeza.sdgenerator.support.maker.values.ObjectValues;
 import com.cmeza.sdgenerator.support.maker.values.ScopeValues;
 import com.cmeza.sdgenerator.util.BuildUtils;
 import javafx.util.Pair;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by carlos on 08/04/17.
@@ -26,8 +26,8 @@ public class ObjectStructure {
     private Set<ObjectMethod> objectMethods = new LinkedHashSet<>();
     private Set<ObjectFunction> objectFunctions = new LinkedHashSet<>();
     private Set<ObjectConstructor> objectConstructors = new LinkedHashSet<>();
+    private Set<String> objectExtends = new LinkedHashSet<>();
     private String objectName;
-    private String objectExtend;
     private String objectRawBody;
 
     public ObjectStructure(String objectPackage, ScopeValues objectScope, ObjectTypeValues objectType, String objectName) {
@@ -35,7 +35,7 @@ public class ObjectStructure {
         this.objectScope = objectScope;
         this.objectType = objectType;
         this.objectName = BuildUtils.cleanSpaces(objectName);
-        this.objectExtend = "";
+//        this.objectExtend = "";
         this.objectRawBody = "";
     }
 
@@ -86,17 +86,13 @@ public class ObjectStructure {
         return this;
     }
 
-    public ObjectStructure setExtend(String objectExtend, Object... objects) {
-    	String extend = BuildUtils.builDiamond(objectExtend, objects);
-    	// multiple extends
-    	this.objectExtend = (this.objectExtend.equals("")) ? extend : this.objectExtend + ", " + extend; 
+    public ObjectStructure addExtend(String objectExtend, Object... objects) {
+        this.objectExtends.add(BuildUtils.builDiamond(objectExtend, objects));
         return this;
     }
 
-    public ObjectStructure setExtend(Class<?> clazz, Object... objects) {
-        if (clazz != null) {
-            this.objectExtend = BuildUtils.builDiamond(clazz.getSimpleName(), objects);
-        }
+    public ObjectStructure addExtend(Class<?> clazz, Object... objects) {
+        this.objectExtends.add(BuildUtils.builDiamond(clazz.getSimpleName(), objects));
         return this;
     }
 
@@ -140,11 +136,13 @@ public class ObjectStructure {
     }
 
     public String getObjectImports() {
+        List<String> objectImportsOrder = new LinkedList<>(objectImports);
+        objectImportsOrder.sort(Comparator.comparing(String::toString));
         StringBuilder concat = new StringBuilder("");
-        for (String str : objectImports) {
+        for (String str : objectImportsOrder) {
             concat.append(str);
         }
-        if (!objectImports.isEmpty()) {
+        if (!objectImportsOrder.isEmpty()) {
             concat.append(CommonValues.NEWLINE);
         }
         return concat.toString();
@@ -227,7 +225,7 @@ public class ObjectStructure {
     }
 
     public String getObjectExtend() {
-        return objectExtend.isEmpty() ? "" : CommonValues.SPACE.getValue() + ObjectValues.EXTENDS.getValue() + objectExtend;
+        return objectExtends.isEmpty() ? "" : CommonValues.SPACE.getValue() + ObjectValues.EXTENDS.getValue() + StringUtils.join(objectExtends, ", ");
     }
 
     public String getObjectRawBody() {
@@ -468,7 +466,5 @@ public class ObjectStructure {
             return result;
         }
     }
-
-
 
 }

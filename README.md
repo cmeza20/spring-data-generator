@@ -9,6 +9,11 @@ Spring Data Generator for JPA repositories and managers.
 * Generate managers for JPA Entities
 * EntityScan wrapped annotation
 * Overwrite option
+* Support JpaSpecificationExcecutor<?>
+* Support @EmbeddedId annotation
+* @Id or @EmbeddedId primitive support
+* Package structure support
+* Additional extends support
 
 ## Dependencies ##
 
@@ -22,7 +27,7 @@ Download the jar through Maven:
 <dependency>
   <groupId>com.cmeza</groupId>
   <artifactId>spring-data-generator</artifactId>
-  <version>1.1.6</version>
+  <version>1.1.7</version>
 </dependency>
 ```
 
@@ -36,7 +41,10 @@ The simple Spring Data JPA configuration with Java-Config looks like this:
         managerPostfix = "Manager",
         onlyAnnotations = false,
         debug = false,
-        overwrite = false
+        overwrite = false,
+        additionalExtends = {
+                QuerydslPredicateExecutor.class
+        }
 )
 @SpringBootApplication
 public class AppConfig {
@@ -58,6 +66,7 @@ public class AppConfig {
 | onlyAnnotations | No | false | Scan only classes annotated with @SDGenerate or @SDNoGenerate |
 | debug | No | false | Enable debug log |
 | overwrite | No | false | Overwrite existing files |
+| additionalExtends | No | false | Extension of additional interfaces |
 
 ## Generate by Plugin ##
 Download the jar through Maven:
@@ -67,7 +76,7 @@ Download the jar through Maven:
 		<plugin>
 			<groupId>com.cmeza</groupId>
 			<artifactId>spring-data-generator</artifactId>
-			<version>1.1.6</version>
+			<version>1.1.7</version>
 			<configuration>
 				<entity-package>
 				    <param>com.acme.model</param>
@@ -78,6 +87,9 @@ Download the jar through Maven:
 				<manager-postfix>Manager</manager-postfix>
 				<only-annotations>false</only-annotations>
 				<overwrite>false</overwrite>
+				<additional-extends>
+                    <param>org.springframework.data.querydsl.QuerydslPredicateExecutor</param>
+                </additional-extends>
 			</configuration>
 		</plugin>
 	</plugins>
@@ -93,6 +105,7 @@ Download the jar through Maven:
 | manager-postfix | No | "Manager" | Postfix for managers. example: Account**Manager** |
 | onlyAnnotations | No | false | Scan only classes annotated with @SDGenerate or @SDNoGenerate |
 | overwrite | No | false | Overwrite existing files |
+| additional-extends | No | false | Extension of additional interfaces |
 
 #### Generate repositories (terminal)
 ```
@@ -151,6 +164,9 @@ public class AccountManager {
 ## Notes ##
 
 * The overwrite option delete the existing file to regenerate
+* The generation of repositories and administrators inherits the entity package. Example:
+
+![alt tag](https://user-images.githubusercontent.com/9298942/39490821-bf4b53b6-4d4f-11e8-9853-fb4ece43346e.png "Package structure support")
 
 License
 ----

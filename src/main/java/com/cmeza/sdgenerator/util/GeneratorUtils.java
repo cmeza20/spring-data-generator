@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by carlos on 08/04/17.
@@ -62,15 +64,22 @@ public class GeneratorUtils {
     }
 
     public static File[] getFileList(String dirPath, String prefix) {
-        File[] returnFiles = new File(dirPath)
-                .listFiles(
-                        (dir1, name) -> name.contains(prefix) && name.endsWith(".java")
-                );
+        List<File> returnFiles = new ArrayList<>();
+        findFiles(dirPath, returnFiles, prefix);
+        return returnFiles.toArray(new File[returnFiles.size()]);
+    }
 
-        if (returnFiles == null) {
-            return new File[]{};
+    private static void findFiles(String directoryName, List<File> files, String prefix) {
+        File directory = new File(directoryName);
+        File[] filedDirectory = directory.listFiles();
+        if (filedDirectory != null) {
+            for (File file : filedDirectory) {
+                if (file.isFile()) {
+                    files.add(file);
+                } else if (file.isDirectory()) {
+                    findFiles(file.getAbsolutePath(), files, prefix);
+                }
+            }
         }
-        
-        return returnFiles;
     }
 }

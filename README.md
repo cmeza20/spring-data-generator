@@ -66,7 +66,7 @@ public class AppConfig {
 | onlyAnnotations | No | false | Scan only classes annotated with @SDGenerate or @SDNoGenerate |
 | debug | No | false | Enable debug log |
 | overwrite | No | false | Overwrite existing files |
-| additionalExtends | No | false | Extension of additional interfaces |
+| additionalExtends | No | [] | Extension of additional interfaces |
 
 ## Generate by Plugin ##
 Download the jar through Maven:
@@ -105,7 +105,7 @@ Download the jar through Maven:
 | manager-postfix | No | "Manager" | Postfix for managers. example: Account**Manager** |
 | onlyAnnotations | No | false | Scan only classes annotated with @SDGenerate or @SDNoGenerate |
 | overwrite | No | false | Overwrite existing files |
-| additional-extends | No | false | Extension of additional interfaces |
+| additional-extends | No | [] | Extension of additional interfaces |
 
 #### Generate repositories (terminal)
 ```
@@ -164,7 +164,7 @@ public class AccountManager {
 ## Notes ##
 
 * The overwrite option delete the existing file to regenerate
-* The generation of repositories and administrators inherits the entity package. Example:
+* The generation of repositories and managers inherits the entity package. Example:
 
 ![alt tag](https://user-images.githubusercontent.com/9298942/39490821-bf4b53b6-4d4f-11e8-9853-fb4ece43346e.png "Package structure support")
 

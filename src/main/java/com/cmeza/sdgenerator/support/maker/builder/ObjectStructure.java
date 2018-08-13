@@ -5,7 +5,7 @@ import com.cmeza.sdgenerator.support.maker.values.ObjectTypeValues;
 import com.cmeza.sdgenerator.support.maker.values.ObjectValues;
 import com.cmeza.sdgenerator.support.maker.values.ScopeValues;
 import com.cmeza.sdgenerator.util.BuildUtils;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -247,7 +247,7 @@ public class ObjectStructure {
         }
 
         public ObjectConstructor addArgument(String argumentClass, String argumentName) {
-            constructorArguments.add(new Pair<>(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
+            constructorArguments.add(Pair.of(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
             return this;
         }
 
@@ -325,7 +325,7 @@ public class ObjectStructure {
         }
 
         public ObjectFunction addArgument(String argumentClass, String argumentName) {
-            functionArguments.add(new Pair<>(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
+            functionArguments.add(Pair.of(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
             return this;
         }
 
@@ -410,7 +410,7 @@ public class ObjectStructure {
         }
 
         public ObjectMethod addArgument(String argumentClass, String argumentName) {
-            methodArguments.add(new Pair<>(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
+            methodArguments.add(Pair.of(BuildUtils.cleanSpaces(argumentClass), BuildUtils.cleanSpaces(argumentName)));
             return this;
         }
 

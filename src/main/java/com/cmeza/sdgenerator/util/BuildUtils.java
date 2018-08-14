@@ -4,7 +4,7 @@ import com.cmeza.sdgenerator.support.maker.values.CommonValues;
 import com.cmeza.sdgenerator.support.maker.values.ExpressionValues;
 import com.cmeza.sdgenerator.support.maker.values.ObjectValues;
 import com.cmeza.sdgenerator.support.maker.values.ScopeValues;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Set;
 

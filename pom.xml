@@ -7,7 +7,7 @@
     <groupId>com.cmeza</groupId>
     <artifactId>spring-data-generator</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.1.7-SNAPSHOT</version>
+    <version>1.1.8-SNAPSHOT</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Spring Data Generator for JPA repositories and managers.</description>
@@ -128,6 +128,7 @@
                 <version>3.2</version>
             </plugin>
         </plugins>
+
     </build>
 
 </project>

@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.1.9] - 2022-04-27
+### Added
+- [Issue:25]: Hide class comments
+- Lombok configuration
+- Access "final" to manager attribute
+
 ## [1.1.8] - 2018-08-13
 ### Added
 - [Issue:20]: Missing class while generating managers with Maven plugin
@@ -44,6 +50,7 @@
 ### Added
 - Generate in Runtime
 
+[1.1.9]: https://github.com/cmeza20/spring-data-generator/compare/1.1.8...1.1.9
 [1.1.8]: https://github.com/cmeza20/spring-data-generator/compare/1.1.7...1.1.8
 [1.1.7]: https://github.com/cmeza20/spring-data-generator/compare/1.1.6...1.1.7
 [1.1.6]: https://github.com/cmeza20/spring-data-generator/compare/1.1.5...1.1.6
@@ -57,3 +64,4 @@
 
 
 [Issue:20]: https://github.com/cmeza20/spring-data-generator/issues/20
+[Issue:25]: https://github.com/cmeza20/spring-data-generator/issues/25

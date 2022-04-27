@@ -14,6 +14,7 @@ Spring Data Generator for JPA repositories and managers.
 * @Id or @EmbeddedId primitive support
 * Package structure support
 * Additional extends support
+* Lombok support
 
 ## Dependencies ##
 
@@ -27,7 +28,7 @@ Download the jar through Maven:
 <dependency>
   <groupId>com.cmeza</groupId>
   <artifactId>spring-data-generator</artifactId>
-  <version>1.1.8</version>
+  <version>1.1.9</version>
 </dependency>
 ```
 
@@ -44,7 +45,9 @@ The simple Spring Data JPA configuration with Java-Config looks like this:
         overwrite = false,
         additionalExtends = {
                 QuerydslPredicateExecutor.class
-        }
+        },
+        lombokAnnotations = false,
+        withComments = true
 )
 @SpringBootApplication
 public class AppConfig {
@@ -67,6 +70,8 @@ public class AppConfig {
 | debug | No | false | Enable debug log |
 | overwrite | No | false | Overwrite existing files |
 | additionalExtends | No | [] | Extension of additional interfaces |
+| lombok-annotations | No | false | Support Lombok annotations |
+| with-comments | No | true | Class comments activation |
 
 ## Generate by Plugin ##
 Download the jar through Maven:
@@ -76,7 +81,7 @@ Download the jar through Maven:
 		<plugin>
 			<groupId>com.cmeza</groupId>
 			<artifactId>spring-data-generator</artifactId>
-			<version>1.1.8</version>
+			<version>1.1.9</version>
 			<configuration>
 				<entity-package>
 				    <param>com.acme.model</param>
@@ -90,6 +95,8 @@ Download the jar through Maven:
 				<additional-extends>
                     <param>org.springframework.data.querydsl.QuerydslPredicateExecutor</param>
                 </additional-extends>
+                <lombok-annotations>false</lombok-annotations>
+                <with-comments>true</with-comments>
 			</configuration>
 		</plugin>
 	</plugins>
@@ -106,6 +113,8 @@ Download the jar through Maven:
 | onlyAnnotations | No | false | Scan only classes annotated with @SDGenerate or @SDNoGenerate |
 | overwrite | No | false | Overwrite existing files |
 | additional-extends | No | [] | Extension of additional interfaces |
+| lombok-annotations | No | false | Support Lombok annotations |
+| with-comments | No | true | Class comments activation |
 
 #### Generate repositories (terminal)
 ```
@@ -148,16 +157,28 @@ public interface AccountRepository extends JpaRepository<Account, Long>, JpaSpec
 
 Generate a manager class example in `com.acme.managers`:
 
+Without Lombok
 ```java
 @Component
 public class AccountManager {
     
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
     
     @Autowired
     public AccountManager(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }   
+}
+```
+With Lombok
+
+```java
+@Component
+@RequiredArgsConstructor
+public class AccountManager {
+
+    private final AccountRepository accountRepository;
+    
 }
 ```
 

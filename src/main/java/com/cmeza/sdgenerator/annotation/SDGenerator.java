@@ -35,5 +35,9 @@ public @interface SDGenerator {
 
     boolean overwrite() default false;
 
+    boolean lombokAnnotations() default false;
+
+    boolean withComments() default true;
+
     Class<?>[] additionalExtends() default {};
 }

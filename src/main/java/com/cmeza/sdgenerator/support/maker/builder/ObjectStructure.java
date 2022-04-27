@@ -5,8 +5,10 @@ import com.cmeza.sdgenerator.support.maker.values.ObjectTypeValues;
 import com.cmeza.sdgenerator.support.maker.values.ObjectValues;
 import com.cmeza.sdgenerator.support.maker.values.ScopeValues;
 import com.cmeza.sdgenerator.util.BuildUtils;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -15,19 +17,21 @@ import java.util.*;
  */
 public class ObjectStructure {
 
-    private ObjectTypeValues objectType;
-    private ScopeValues objectScope;
+    private final ObjectTypeValues objectType;
+    private final ScopeValues objectScope;
 
     private String objectPackage;
-    private Set<String> objectImports = new LinkedHashSet<>();
-    private Set<String> objectAnnotations = new LinkedHashSet<>();
-    private Set<String> objectImplements = new LinkedHashSet<>();
-    private Set<String> objectAttributes = new LinkedHashSet<>();
-    private Set<ObjectMethod> objectMethods = new LinkedHashSet<>();
-    private Set<ObjectFunction> objectFunctions = new LinkedHashSet<>();
-    private Set<ObjectConstructor> objectConstructors = new LinkedHashSet<>();
-    private Set<String> objectExtends = new LinkedHashSet<>();
-    private String objectName;
+    private final Set<String> objectImports = new LinkedHashSet<>();
+    private final Set<String> objectAnnotations = new LinkedHashSet<>();
+    private final Set<String> objectImplements = new LinkedHashSet<>();
+    private final Set<String> objectAttributes = new LinkedHashSet<>();
+    private final Set<String> objectFinalAttributes = new LinkedHashSet<>();
+    private final Set<ObjectMethod> objectMethods = new LinkedHashSet<>();
+    private final Set<ObjectFunction> objectFunctions = new LinkedHashSet<>();
+    private final Set<ObjectConstructor> objectConstructors = new LinkedHashSet<>();
+    private final Set<String> objectExtends = new LinkedHashSet<>();
+    private final String objectName;
+    private boolean lombokAnnotations;
     private String objectRawBody;
 
     public ObjectStructure(String objectPackage, ScopeValues objectScope, ObjectTypeValues objectType, String objectName) {
@@ -35,7 +39,6 @@ public class ObjectStructure {
         this.objectScope = objectScope;
         this.objectType = objectType;
         this.objectName = BuildUtils.cleanSpaces(objectName);
-//        this.objectExtend = "";
         this.objectRawBody = "";
     }
 
@@ -109,7 +112,12 @@ public class ObjectStructure {
     }
 
     public ObjectStructure addAttribute(String attributeClass, String attribute) {
-        this.objectAttributes.add(BuildUtils.buildAttribute(attributeClass, attribute));
+        this.objectAttributes.add(BuildUtils.buildAttribute(attributeClass, attribute, false));
+        return this;
+    }
+
+    public ObjectStructure addFinalAttribute(String attributeClass, String attribute) {
+        this.objectFinalAttributes.add(BuildUtils.buildAttribute(attributeClass, attribute, true));
         return this;
     }
 
@@ -120,6 +128,11 @@ public class ObjectStructure {
 
     public ObjectStructure addFunction(ObjectFunction objectFunction) {
         this.objectFunctions.add(objectFunction);
+        return this;
+    }
+
+    public ObjectStructure setLombokAnnotations(boolean lombokAnnotations) {
+        this.lombokAnnotations = lombokAnnotations;
         return this;
     }
 
@@ -137,6 +150,10 @@ public class ObjectStructure {
 
     public String getObjectImports() {
         List<String> objectImportsOrder = new LinkedList<>(objectImports);
+        if (lombokAnnotations) {
+            objectImportsOrder.add(BuildUtils.buildImport("lombok.RequiredArgsConstructor"));
+            BuildUtils.removeImport(objectImportsOrder, Autowired.class.getName());
+        }
         objectImportsOrder.sort(Comparator.comparing(String::toString));
         StringBuilder concat = new StringBuilder("");
         for (String str : objectImportsOrder) {
@@ -150,6 +167,9 @@ public class ObjectStructure {
 
     public String getObjectAnnotations() {
         StringBuilder concat = new StringBuilder("");
+        if (lombokAnnotations) {
+            objectAnnotations.add(BuildUtils.buildAnnotation(RequiredArgsConstructor.class.getSimpleName()));
+        }
         for (String str : objectAnnotations) {
             concat.append(str);
         }
@@ -166,7 +186,7 @@ public class ObjectStructure {
             }
             position++;
         }
-        return objectImplements.isEmpty() ? "" : CommonValues.SPACE.getValue() + ObjectValues.IMPLEMENTS.getValue() + concat.toString();
+        return objectImplements.isEmpty() ? "" : CommonValues.SPACE.getValue() + ObjectValues.IMPLEMENTS.getValue() + concat;
     }
 
     public String getObjectAttributes() {
@@ -174,7 +194,15 @@ public class ObjectStructure {
         for (String str : objectAttributes) {
             concat.append(str);
         }
-        return !objectAttributes.isEmpty() ? CommonValues.NEWLINE.getValue() + concat.toString() : "";
+        return !objectAttributes.isEmpty() ? CommonValues.NEWLINE.getValue() + concat : "";
+    }
+
+    public String getObjectFinalAttributes() {
+        StringBuilder concat = new StringBuilder("");
+        for (String str : objectFinalAttributes) {
+            concat.append(str);
+        }
+        return !objectFinalAttributes.isEmpty() ? CommonValues.NEWLINE.getValue() + concat : "";
     }
 
     public int getObjectAttributesSize() {
@@ -191,7 +219,7 @@ public class ObjectStructure {
             }
             position++;
         }
-        return !objectMethods.isEmpty() ? CommonValues.NEWLINE.getValue() +concat.toString() : "";
+        return !objectMethods.isEmpty() ? CommonValues.NEWLINE.getValue() + concat : "";
     }
 
     public String getObjectFunctions() {
@@ -204,20 +232,23 @@ public class ObjectStructure {
             }
             position++;
         }
-        return !objectFunctions.isEmpty() ? CommonValues.NEWLINE.getValue() + concat.toString() : "";
+        return !objectFunctions.isEmpty() ? CommonValues.NEWLINE.getValue() + concat : "";
     }
 
     public String getObjectConstructors() {
-        StringBuilder concat = new StringBuilder("");
-        int position = 0;
-        for (ObjectConstructor constructor : objectConstructors) {
-            concat.append(constructor);
-            if (position != (objectConstructors.size() -1)){
-                concat.append(CommonValues.NEWLINE);
+        if (!lombokAnnotations) {
+            StringBuilder concat = new StringBuilder("");
+            int position = 0;
+            for (ObjectConstructor constructor : objectConstructors) {
+                concat.append(constructor);
+                if (position != (objectConstructors.size() -1)){
+                    concat.append(CommonValues.NEWLINE);
+                }
+                position++;
             }
-            position++;
+            return !objectConstructors.isEmpty() ? CommonValues.NEWLINE.getValue() + concat : "";
         }
-        return !objectConstructors.isEmpty() ? CommonValues.NEWLINE.getValue() + concat.toString() : "";
+        return CommonValues.NONE.getValue();
     }
 
     public String getObjectName() {
@@ -233,9 +264,9 @@ public class ObjectStructure {
     }
 
     public static class ObjectConstructor {
-        private ScopeValues constructorScope;
-        private String constructorName;
-        private Set<Pair<Object, Object>> constructorArguments = new LinkedHashSet<>();
+        private final ScopeValues constructorScope;
+        private final String constructorName;
+        private final Set<Pair<Object, Object>> constructorArguments = new LinkedHashSet<>();
         private String constructorBody;
         private String constructorAnnotations;
 
@@ -307,10 +338,10 @@ public class ObjectStructure {
     }
 
     public static class ObjectFunction {
-        private ScopeValues functionScope;
-        private String functionName;
-        private String functionReturnType;
-        private Set<Pair<Object, Object>> functionArguments = new LinkedHashSet<>();
+        private final ScopeValues functionScope;
+        private final String functionName;
+        private final String functionReturnType;
+        private final Set<Pair<Object, Object>> functionArguments = new LinkedHashSet<>();
         private String functionBody;
         private String functionAnnotations;
         private String functionReturn;
@@ -396,9 +427,9 @@ public class ObjectStructure {
     }
 
     public static class ObjectMethod {
-        private ScopeValues methodScope;
-        private String methodName;
-        private Set<Pair<Object, Object>> methodArguments = new LinkedHashSet<>();
+        private final ScopeValues methodScope;
+        private final String methodName;
+        private final Set<Pair<Object, Object>> methodArguments = new LinkedHashSet<>();
         private String methodBody;
         private String methodAnnotations;
 

@@ -35,6 +35,12 @@ public abstract class CommonsMojo extends AbstractMojo {
     @Parameter(name = Constants.OVERWRITE, defaultValue = "false")
     protected Boolean overwrite;
 
+    @Parameter(name = Constants.LOMBOK_ANOTATIONS, defaultValue = "false")
+    protected Boolean lombokAnnotations;
+
+    @Parameter(name = Constants.WITH_COMMENTS, defaultValue = "true")
+    protected Boolean withComments;
+
     @Parameter(name = Constants.EXTENDS)
     protected String[] additionalExtends;
 

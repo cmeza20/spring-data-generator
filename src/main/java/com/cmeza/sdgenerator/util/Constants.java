@@ -13,10 +13,12 @@ public class Constants {
     public static final String ONLY_ANNOTATIONS = "only-annotations";
     public static final String OVERWRITE = "overwrite";
     public static final String EXTENDS = "additional-extends";
+    public static final String LOMBOK_ANOTATIONS = "lombok-annotations";
+    public static final String WITH_COMMENTS = "with-comments";
 
     public static final String PROJECT_NAME = "Spring Data Generator";
 
-    public static final String VERSION = "(v1.1.8)";
+    public static final String VERSION = "(v1.1.9)";
 
     public static final String TABLE_POSTFIX_COLUMN = "Postfix";
 

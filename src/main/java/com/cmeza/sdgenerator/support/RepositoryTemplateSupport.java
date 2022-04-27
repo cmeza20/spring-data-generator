@@ -15,22 +15,25 @@ import java.util.Set;
 public class RepositoryTemplateSupport extends AbstractTemplateProvider {
 
     private CustomResourceLoader loader;
-    private Set<String> additionalExtends;
+    private final Set<String> additionalExtends;
+    private final boolean withComments;
 
-    public RepositoryTemplateSupport(AnnotationAttributes attributes, Set<String> additionalExtends) {
+    public RepositoryTemplateSupport(AnnotationAttributes attributes, Set<String> additionalExtends, boolean withComments) {
         super(attributes);
         this.additionalExtends = additionalExtends;
+        this.withComments = withComments;
     }
 
-    public RepositoryTemplateSupport(CustomResourceLoader loader, Set<String> additionalExtends) {
+    public RepositoryTemplateSupport(CustomResourceLoader loader, Set<String> additionalExtends, boolean withComments) {
         super(loader);
         this.loader = loader;
         this.additionalExtends = additionalExtends;
+        this.withComments = withComments;
     }
 
     @Override
     protected Tuple<String, Integer> getContentFromTemplate(String repositoryPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition, String additionalPackage) {
-        return new RepositoryStructure(repositoryPackage, simpleClassName, beanDefinition.getBeanClassName(), postfix, loader, additionalExtends).build();
+        return new RepositoryStructure(repositoryPackage, simpleClassName, beanDefinition.getBeanClassName(), postfix, loader, additionalExtends, withComments).build();
     }
 
     @Override

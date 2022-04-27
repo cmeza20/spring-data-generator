@@ -6,13 +6,13 @@ import lombok.Getter;
 import static com.cmeza.sdgenerator.support.maker.values.CommonValues.SPACE;
 
 /**
- * Created by carlos on 08/04/17.
+ * Created by carlos on 25/04/22.
  */
-@AllArgsConstructor
-public enum ObjectTypeValues {
 
-    CLASS("class" + SPACE),
-    INTERFACE("interface" + SPACE);
+@AllArgsConstructor
+public enum AccessValues {
+    FINAL("final" + SPACE),
+    STATIC("static" + SPACE);
 
     @Getter
     private final String value;

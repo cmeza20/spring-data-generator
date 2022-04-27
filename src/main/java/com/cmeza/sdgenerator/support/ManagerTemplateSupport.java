@@ -16,20 +16,26 @@ import java.util.Arrays;
  */
 public class ManagerTemplateSupport extends AbstractTemplateProvider {
 
-    private String repositoryPackage;
-    private String repositoryPostfix;
+    private final String repositoryPackage;
+    private final String repositoryPostfix;
+    private final boolean lombokAnnotations;
+    private final boolean withComments;
 
-    public ManagerTemplateSupport(AnnotationAttributes attributes, String repositoryPackage, String repositoryPostfix) {
+    public ManagerTemplateSupport(AnnotationAttributes attributes, String repositoryPackage, String repositoryPostfix, boolean lombokAnnotations, boolean withComments) {
         super(attributes);
         this.repositoryPackage = repositoryPackage;
         this.repositoryPostfix = repositoryPostfix;
+        this.lombokAnnotations = lombokAnnotations;
+        this.withComments = withComments;
         this.findFilterRepositories();
     }
 
-    public ManagerTemplateSupport(CustomResourceLoader customResourceLoader) {
+    public ManagerTemplateSupport(CustomResourceLoader customResourceLoader, boolean lombokAnnotations, boolean withComments) {
         super(customResourceLoader);
         this.repositoryPackage = customResourceLoader.getRepositoryPackage();
         this.repositoryPostfix = customResourceLoader.getRepositoryPostfix();
+        this.lombokAnnotations = lombokAnnotations;
+        this.withComments = withComments;
         this.findFilterRepositories();
     }
 
@@ -42,7 +48,7 @@ public class ManagerTemplateSupport extends AbstractTemplateProvider {
 
     @Override
     protected Tuple<String, Integer> getContentFromTemplate(String mPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition, String additionalPackage) {
-        return new ManagerStructure(mPackage, simpleClassName, beanDefinition.getBeanClassName(), postfix, repositoryPackage, repositoryPostfix, additionalPackage).build();
+        return new ManagerStructure(mPackage, simpleClassName, beanDefinition.getBeanClassName(), postfix, repositoryPackage, repositoryPostfix, additionalPackage, lombokAnnotations, withComments).build();
     }
 
     @Override

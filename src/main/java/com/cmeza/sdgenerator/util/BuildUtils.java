@@ -1,11 +1,9 @@
 package com.cmeza.sdgenerator.util;
 
-import com.cmeza.sdgenerator.support.maker.values.CommonValues;
-import com.cmeza.sdgenerator.support.maker.values.ExpressionValues;
-import com.cmeza.sdgenerator.support.maker.values.ObjectValues;
-import com.cmeza.sdgenerator.support.maker.values.ScopeValues;
+import com.cmeza.sdgenerator.support.maker.values.*;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,8 +26,12 @@ public class BuildUtils {
         return ObjectValues.IMPORT + cleanSpaces(objectImport) + CommonValues.SEMICOLON;
     }
 
-    public static String buildAttribute(String attributeClass, String attributeName) {
-        return CommonValues.TAB + ScopeValues.PRIVATE.getValue() + cleanSpaces(attributeClass) + CommonValues.SPACE + cleanSpaces(attributeName) + CommonValues.SEMICOLON;
+    public static void removeImport(List<String> objectsImport, String importTag) {
+        objectsImport.removeIf(e -> e.equalsIgnoreCase(ObjectValues.IMPORT + cleanSpaces(importTag) + CommonValues.SEMICOLON));
+    }
+
+    public static String buildAttribute(String attributeClass, String attributeName, boolean hasFinal) {
+        return CommonValues.TAB + ScopeValues.PRIVATE.getValue() + (hasFinal ? AccessValues.FINAL.getValue() : "") + cleanSpaces(attributeClass) + CommonValues.SPACE + cleanSpaces(attributeName) + CommonValues.SEMICOLON;
     }
 
     public static String builDiamond(String objectClass, Object... objects) {

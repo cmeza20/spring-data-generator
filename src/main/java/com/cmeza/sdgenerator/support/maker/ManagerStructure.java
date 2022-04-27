@@ -16,31 +16,34 @@ import org.springframework.stereotype.Component;
  */
 public class ManagerStructure {
 
-    private ObjectBuilder objectBuilder;
+    private final ObjectBuilder objectBuilder;
 
-    public ManagerStructure(String managerPackage, String entityName, String entityClass, String postfix, String repositoryPackage, String repositoryPostfix, String additionalPackage) {
+    public ManagerStructure(String managerPackage, String entityName, String entityClass, String postfix, String repositoryPackage, String repositoryPostfix, String additionalPackage, boolean lombokAnnotations, boolean withComments) {
 
         String managerName = entityName + postfix;
         String repositoryName = entityName + repositoryPostfix;
         String repositoryNameAttribute = GeneratorUtils.decapitalize(repositoryName);
 
         this.objectBuilder = new ObjectBuilder(new ObjectStructure(managerPackage, ScopeValues.PUBLIC, ObjectTypeValues.CLASS, managerName)
+                .setLombokAnnotations(lombokAnnotations)
                 .addImport(repositoryPackage + "." + (additionalPackage.isEmpty() ? "" : (additionalPackage + ".")) + repositoryName)
                 .addImport(entityClass)
                 .addImport(Autowired.class)
                 .addImport(Component.class)
                 .addAnnotation(Component.class)
-                .addAttribute(repositoryName, repositoryNameAttribute)
+                .addFinalAttribute(repositoryName, repositoryNameAttribute)
                 .addConstructor(new ObjectStructure.ObjectConstructor(ScopeValues.PUBLIC, managerName)
                         .addAnnotation(Autowired.class)
                         .addArgument(repositoryName, repositoryNameAttribute)
                         .addBodyLine(ObjectValues.THIS.getValue() + repositoryNameAttribute + ExpressionValues.EQUAL.getValue() + repositoryNameAttribute)
                 )
-        ).setAttributeBottom(false);
+        )
+                .setAttributeBottom(false)
+                .setWithComments(withComments);
 
     }
 
-    public Tuple<String, Integer> build(){
+    public Tuple<String, Integer> build() {
         return new Tuple<>(objectBuilder == null ? null : objectBuilder.build(), 0);
     }
 }

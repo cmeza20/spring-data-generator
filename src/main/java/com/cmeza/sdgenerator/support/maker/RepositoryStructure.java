@@ -34,7 +34,7 @@ public class RepositoryStructure {
         mapConvert.put(double.class, Double.class);
     }
 
-    public RepositoryStructure(String repositoryPackage, String entityName, String entityClass, String postfix, CustomResourceLoader loader, Set<String> additionalExtends) {
+    public RepositoryStructure(String repositoryPackage, String entityName, String entityClass, String postfix, CustomResourceLoader loader, Set<String> additionalExtends, boolean withComments) {
         this.loader = loader;
         String repositoryName = entityName + postfix;
         Tuple<String, Boolean> entityId = getEntityId(entityClass);
@@ -56,7 +56,7 @@ public class RepositoryStructure {
                     objectStructure.addExtend(GeneratorUtils.getSimpleClassName(additionalExtend), entityName);
                 }
             }
-            this.objectBuilder = new ObjectBuilder(objectStructure);
+            this.objectBuilder = new ObjectBuilder(objectStructure).setWithComments(withComments);
         }
     }
 

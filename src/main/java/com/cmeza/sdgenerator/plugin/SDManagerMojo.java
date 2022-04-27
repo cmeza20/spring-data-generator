@@ -6,6 +6,7 @@ import com.cmeza.sdgenerator.util.*;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.*;
+import org.apache.maven.project.MavenProject;
 
 /**
  * Created by carlos on 22/04/17.
@@ -25,22 +26,7 @@ public class SDManagerMojo extends CommonsMojo{
         this.validateField(Constants.REPOSITORY_PACKAGE);
 
         try {
-            CustomResourceLoader resourceLoader = new CustomResourceLoader(project);
-            resourceLoader.setPostfix(managerPostfix);
-            resourceLoader.setRepositoryPackage(repositoryPackage);
-            resourceLoader.setRepositoryPostfix(repositoryPostfix);
-            resourceLoader.setOverwrite(overwrite);
-
-            String absolutePath = GeneratorUtils.getAbsolutePath(managerPackage);
-            if (absolutePath == null){
-                SDLogger.addError("Could not define the absolute path of the managers");
-                throw new SDMojoException();
-            }
-
-            ScanningConfigurationSupport scanningConfigurationSupport = new ScanningConfigurationSupport(entityPackage, onlyAnnotations);
-
-            ManagerTemplateSupport managerTemplateSupport = new ManagerTemplateSupport(resourceLoader);
-            managerTemplateSupport.initializeCreation(absolutePath, managerPackage, scanningConfigurationSupport.getCandidates(resourceLoader), entityPackage);
+            this.executeInternalMojo(project, managerPostfix, repositoryPackage, repositoryPostfix, overwrite, managerPackage, entityPackage, onlyAnnotations, lombokAnnotations, withComments);
 
             SDLogger.printGeneratedTables(true);
 
@@ -48,6 +34,25 @@ public class SDManagerMojo extends CommonsMojo{
             SDLogger.addError(e.getMessage());
             throw new SDMojoException(e.getMessage(), e);
         }
+    }
+
+    public void executeInternalMojo(MavenProject project, String managerPostfix, String repositoryPackage, String repositoryPostfix, Boolean overwrite, String managerPackage, String[] entityPackage, boolean onlyAnnotations, boolean lombokAnnotations, boolean withComments) throws MojoExecutionException, MojoFailureException {
+        CustomResourceLoader resourceLoader = new CustomResourceLoader(project);
+        resourceLoader.setPostfix(managerPostfix);
+        resourceLoader.setRepositoryPackage(repositoryPackage);
+        resourceLoader.setRepositoryPostfix(repositoryPostfix);
+        resourceLoader.setOverwrite(overwrite);
+
+        String absolutePath = GeneratorUtils.getAbsolutePath(managerPackage);
+        if (absolutePath == null){
+            SDLogger.addError("Could not define the absolute path of the managers");
+            throw new SDMojoException();
+        }
+
+        ScanningConfigurationSupport scanningConfigurationSupport = new ScanningConfigurationSupport(entityPackage, onlyAnnotations);
+
+        ManagerTemplateSupport managerTemplateSupport = new ManagerTemplateSupport(resourceLoader, lombokAnnotations, withComments);
+        managerTemplateSupport.initializeCreation(absolutePath, managerPackage, scanningConfigurationSupport.getCandidates(resourceLoader), entityPackage);
     }
     
 }

@@ -15,10 +15,11 @@ Spring Data Generator for JPA repositories and managers.
 * Package structure support
 * Additional extends support
 * Lombok support
+* Jakarta support
 
 ## Dependencies ##
 
-* **Java 8**
+* **Java 11**
 * **Spring data JPA**
 
 ## Generate in Runtime ##
@@ -28,7 +29,7 @@ Download the jar through Maven:
 <dependency>
   <groupId>com.cmeza</groupId>
   <artifactId>spring-data-generator</artifactId>
-  <version>1.1.9</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -81,7 +82,7 @@ Download the jar through Maven:
 		<plugin>
 			<groupId>com.cmeza</groupId>
 			<artifactId>spring-data-generator</artifactId>
-			<version>1.1.9</version>
+			<version>2.0.0</version>
 			<configuration>
 				<entity-package>
 				    <param>com.acme.model</param>
@@ -130,6 +131,12 @@ $ mvn spring-data-generator:managers
 Sample entity in `com.acme.model`
 
 ```java
+
+//import javax.persistence.Entity; //javax persistence support
+//import javax.persistence.Id; //javax persistence support
+import jakarta.persistence.Entity; //jakarta persistence support
+import jakarta.persistence.Id; //jakarta persistence support
+
 @Entity
 //@SDGenerate   ->  Optional: Include to classes scan
 //@SDNoGenerate   ->  Optional: Exclude to classes scan

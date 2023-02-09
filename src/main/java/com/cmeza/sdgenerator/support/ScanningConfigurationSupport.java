@@ -73,6 +73,7 @@ public class ScanningConfigurationSupport {
         scanner.setExcludeAnnotation(SDNoGenerate.class);
         if (!onlyAnnotations) {
             scanner.setIncludeAnnotation(Entity.class);
+            scanner.setIncludeAnnotation(jakarta.persistence.Entity.class);
         }
 
         Iterator filterPackages = this.getBasePackages().iterator();

@@ -72,7 +72,8 @@ public class RepositoryStructure {
 
             while (entity != null){
                 for (Field field : entity.getDeclaredFields()) {
-                    if (field.isAnnotationPresent(Id.class) || field.isAnnotationPresent(EmbeddedId.class)) {
+                    if (field.isAnnotationPresent(Id.class) || field.isAnnotationPresent(EmbeddedId.class) ||
+                            field.isAnnotationPresent(jakarta.persistence.Id.class) || field.isAnnotationPresent(jakarta.persistence.EmbeddedId.class)) {
                         Class<?> dataType = field.getType();
                         if (field.getType().isPrimitive()) {
                             dataType = this.primitiveToObject(field.getType());
@@ -82,7 +83,10 @@ public class RepositoryStructure {
                 }
 
                 for (Method method : entity.getDeclaredMethods()) {
-                    if (!method.getReturnType().equals(Void.TYPE) && (method.isAnnotationPresent(Id.class) || method.isAnnotationPresent(EmbeddedId.class))) {
+                    if (!method.getReturnType().equals(Void.TYPE) &&
+                            (method.isAnnotationPresent(Id.class) || method.isAnnotationPresent(EmbeddedId.class)) ||
+                            (method.isAnnotationPresent(jakarta.persistence.Id.class) || method.isAnnotationPresent(jakarta.persistence.EmbeddedId.class))
+                    ) {
                         Class<?> dataType = method.getReturnType();
                         if (method.getReturnType().isPrimitive()) {
                             dataType = this.primitiveToObject(method.getReturnType());

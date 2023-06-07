@@ -8,6 +8,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
 
+import java.io.IOException;
+
 /**
  * Created by carlos on 22/04/17.
  */
@@ -26,10 +28,14 @@ public class SDManagerMojo extends CommonsMojo{
         this.validateField(Constants.REPOSITORY_PACKAGE);
 
         try {
+            GeneratorUtils.setBaseDir(project.getBasedir().getCanonicalPath());
             this.executeInternalMojo(project, managerPostfix, repositoryPackage, repositoryPostfix, overwrite, managerPackage, entityPackage, onlyAnnotations, lombokAnnotations, withComments);
 
             SDLogger.printGeneratedTables(true);
 
+        } catch (IOException e) {
+            SDLogger.addError("Could not define the absolute path!");
+            throw new SDMojoException();
         } catch (Exception e) {
             SDLogger.addError(e.getMessage());
             throw new SDMojoException(e.getMessage(), e);

@@ -8,12 +8,13 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
 
+import java.io.IOException;
 import java.util.Set;
 
 /**
  * Created by carlos on 22/04/17.
  */
-@Mojo(name = "repositories")
+@Mojo(name = "repositories", requiresDependencyResolution = ResolutionScope.RUNTIME)
 @Execute(phase = LifecyclePhase.COMPILE)
 @SuppressWarnings("unused")
 public class SDRepositoryMojo extends CommonsMojo{

@@ -19,7 +19,7 @@ public class GeneratorUtils {
     private static String baseDir;
 
     public static String getAbsolutePath(){
-        return baseDir + "/src/main/java/";
+        return getBaseDir();
     }
 
     public static String getAbsolutePath(String strPackage){

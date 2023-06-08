@@ -28,7 +28,7 @@ public class SDManagerMojo extends CommonsMojo{
         this.validateField(Constants.REPOSITORY_PACKAGE);
 
         try {
-            GeneratorUtils.setBaseDir(project.getBasedir().getCanonicalPath());
+            GeneratorUtils.setBaseDir(project.getBasedir().getCanonicalPath() + Constants.GENERATE_DIRECTORY);
             this.executeInternalMojo(project, managerPostfix, repositoryPackage, repositoryPostfix, overwrite, managerPackage, entityPackage, onlyAnnotations, lombokAnnotations, withComments);
 
             SDLogger.printGeneratedTables(true);

@@ -32,7 +32,8 @@ public class SDRepositoryMojo extends CommonsMojo{
         this.validateField(Constants.EXTENDS);
 
         try {
-            GeneratorUtils.setBaseDir(project.getBasedir().getCanonicalPath());
+
+            GeneratorUtils.setBaseDir(project.getBasedir().getCanonicalPath() + Constants.GENERATE_DIRECTORY);
             this.executeInternalMojo(project, repositoryPostfix, overwrite, repositoryPackage, entityPackage, onlyAnnotations, additionalExtendsList, withComments);
             SDLogger.printGeneratedTables(true);
         } catch (IOException e) {

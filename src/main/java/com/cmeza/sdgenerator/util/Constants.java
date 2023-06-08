@@ -15,6 +15,7 @@ public class Constants {
     public static final String EXTENDS = "additional-extends";
     public static final String LOMBOK_ANOTATIONS = "lombok-annotations";
     public static final String WITH_COMMENTS = "with-comments";
+    public static final String GENERATE_DIRECTORY = "generate-directory";
 
     public static final String PROJECT_NAME = "Spring Data Generator";
 

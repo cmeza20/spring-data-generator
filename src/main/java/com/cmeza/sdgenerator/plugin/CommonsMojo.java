@@ -1,8 +1,9 @@
 package com.cmeza.sdgenerator.plugin;
 
-import com.cmeza.sdgenerator.util.*;
+import com.cmeza.sdgenerator.util.Constants;
+import com.cmeza.sdgenerator.util.SDLogger;
+import com.cmeza.sdgenerator.util.SDMojoException;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
@@ -44,7 +45,10 @@ public abstract class CommonsMojo extends AbstractMojo {
     @Parameter(name = Constants.EXTENDS)
     protected String[] additionalExtends;
 
-    @Component
+    @Parameter(name = Constants.GENERATE_DIRECTORY, defaultValue = "/${project.build.directory}/generated-sources/")
+    protected String generateDirectory;
+
+    @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
     protected Set<String> additionalExtendsList = new LinkedHashSet<>();

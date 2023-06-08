@@ -40,7 +40,7 @@ public class ManagerTemplateSupport extends AbstractTemplateProvider {
     }
 
     private void findFilterRepositories() {
-        String repositoryPath = GeneratorUtils.getAbsolutePath() + repositoryPackage.replace(".", "/");
+        String repositoryPath = GeneratorUtils.getAbsolutePath(repositoryPackage);
         File[] repositoryFiles = GeneratorUtils.getFileList(repositoryPath, repositoryPostfix);
         this.setIncludeFilter(Arrays.asList(repositoryFiles));
         this.setIncludeFilterPostfix(repositoryPostfix);

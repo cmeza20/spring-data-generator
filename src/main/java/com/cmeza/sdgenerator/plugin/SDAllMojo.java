@@ -1,6 +1,9 @@
 package com.cmeza.sdgenerator.plugin;
 
-import com.cmeza.sdgenerator.util.*;
+import com.cmeza.sdgenerator.util.Constants;
+import com.cmeza.sdgenerator.util.GeneratorUtils;
+import com.cmeza.sdgenerator.util.SDLogger;
+import com.cmeza.sdgenerator.util.SDMojoException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Execute;
@@ -25,6 +28,7 @@ public class SDAllMojo extends CommonsMojo{
         this.validateField(Constants.EXTENDS);
 
         try {
+            GeneratorUtils.setBaseDir(generateDirectory);
             SDRepositoryMojo sdRepositoryMojo = new SDRepositoryMojo();
             sdRepositoryMojo.executeInternalMojo(project, repositoryPostfix, overwrite, repositoryPackage, entityPackage, onlyAnnotations, additionalExtendsList, withComments);
 

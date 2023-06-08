@@ -16,20 +16,14 @@ public class GeneratorUtils {
     private GeneratorUtils() {
     }
 
+    private static String baseDir;
+
     public static String getAbsolutePath(){
-        try {
-            return new File(".").getCanonicalPath() + "/src/main/java/";
-        } catch (IOException e) {
-            return null;
-        }
+        return getBaseDir();
     }
 
     public static String getAbsolutePath(String strPackage){
-        String absolute = getAbsolutePath();
-        if (absolute == null) {
-            return null;
-        }
-        return absolute + strPackage.replace(".", "/");
+        return getAbsolutePath() + strPackage.replace(".", "/");
     }
 
     public static boolean verifyPackage(String stringPath){
@@ -80,6 +74,18 @@ public class GeneratorUtils {
                     findFiles(file.getAbsolutePath(), files, prefix);
                 }
             }
+        }
+    }
+
+    public static String getBaseDir() {
+        return baseDir;
+    }
+
+    public static void setBaseDir(String baseDir) {
+        if (baseDir.endsWith("/")) {
+            GeneratorUtils.baseDir = baseDir;
+        } else {
+            GeneratorUtils.baseDir = baseDir + "/";
         }
     }
 }

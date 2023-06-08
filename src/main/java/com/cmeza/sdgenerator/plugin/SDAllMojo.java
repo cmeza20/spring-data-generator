@@ -1,13 +1,14 @@
 package com.cmeza.sdgenerator.plugin;
 
-import com.cmeza.sdgenerator.util.*;
+import com.cmeza.sdgenerator.util.Constants;
+import com.cmeza.sdgenerator.util.GeneratorUtils;
+import com.cmeza.sdgenerator.util.SDLogger;
+import com.cmeza.sdgenerator.util.SDMojoException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-
-import java.io.IOException;
 
 /**
  * Created by carlos on 25/04/22.
@@ -27,7 +28,7 @@ public class SDAllMojo extends CommonsMojo{
         this.validateField(Constants.EXTENDS);
 
         try {
-            GeneratorUtils.setBaseDir(project.getBasedir().getCanonicalPath() + Constants.GENERATE_DIRECTORY);
+            GeneratorUtils.setBaseDir(generateDirectory);
             SDRepositoryMojo sdRepositoryMojo = new SDRepositoryMojo();
             sdRepositoryMojo.executeInternalMojo(project, repositoryPostfix, overwrite, repositoryPackage, entityPackage, onlyAnnotations, additionalExtendsList, withComments);
 
@@ -35,9 +36,6 @@ public class SDAllMojo extends CommonsMojo{
             sdManagerMojo.executeInternalMojo(project, managerPostfix, repositoryPackage, repositoryPostfix, overwrite, managerPackage, entityPackage, onlyAnnotations, lombokAnnotations, withComments);
 
             SDLogger.printGeneratedTables(true);
-        } catch (IOException e) {
-            SDLogger.addError("Could not define the absolute path!");
-            throw new SDMojoException();
         } catch (Exception e) {
             SDLogger.addError(e.getMessage());
             throw new SDMojoException(e.getMessage(), e);

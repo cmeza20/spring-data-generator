@@ -82,6 +82,10 @@ public class GeneratorUtils {
     }
 
     public static void setBaseDir(String baseDir) {
-        GeneratorUtils.baseDir = baseDir;
+        if (baseDir.endsWith("/")) {
+            GeneratorUtils.baseDir = baseDir;
+        } else {
+            GeneratorUtils.baseDir = baseDir + "/";
+        }
     }
 }

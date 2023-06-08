@@ -10,7 +10,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.project.MavenProject;
 
-import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -32,13 +31,9 @@ public class SDRepositoryMojo extends CommonsMojo{
         this.validateField(Constants.EXTENDS);
 
         try {
-
-            GeneratorUtils.setBaseDir(project.getBasedir().getCanonicalPath() + Constants.GENERATE_DIRECTORY);
+            GeneratorUtils.setBaseDir(generateDirectory);
             this.executeInternalMojo(project, repositoryPostfix, overwrite, repositoryPackage, entityPackage, onlyAnnotations, additionalExtendsList, withComments);
             SDLogger.printGeneratedTables(true);
-        } catch (IOException e) {
-            SDLogger.addError("Could not define the absolute path!");
-            throw new SDMojoException();
         } catch (Exception e) {
             SDLogger.addError(e.getMessage());
             throw new SDMojoException(e.getMessage(), e);

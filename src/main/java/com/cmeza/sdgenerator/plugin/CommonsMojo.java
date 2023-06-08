@@ -45,7 +45,7 @@ public abstract class CommonsMojo extends AbstractMojo {
     @Parameter(name = Constants.EXTENDS)
     protected String[] additionalExtends;
 
-    @Parameter(name = Constants.GENERATE_DIRECTORY, defaultValue = "/generated-sources")
+    @Parameter(name = Constants.GENERATE_DIRECTORY, defaultValue = "/${project.build.directory}/generated-sources/")
     protected String generateDirectory;
 
     @Parameter(defaultValue = "${project}", readonly = true)

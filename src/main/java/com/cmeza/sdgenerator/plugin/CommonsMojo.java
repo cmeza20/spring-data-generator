@@ -41,6 +41,9 @@ public abstract class CommonsMojo extends AbstractMojo {
     @Parameter(name = Constants.WITH_COMMENTS, defaultValue = "true")
     protected Boolean withComments;
 
+    @Parameter(name = Constants.WITH_JPASPECIFICATIONEXECUTOR, defaultValue = "true")
+    protected Boolean withJpaSpecificationExecutor;
+
     @Parameter(name = Constants.EXTENDS)
     protected String[] additionalExtends;
 
@@ -112,6 +115,23 @@ public abstract class CommonsMojo extends AbstractMojo {
         if (errorValidate) {
             throw new SDMojoException();
         }
+    }
+
+    protected GeneratorProperties buildProperties() {
+        return GeneratorProperties.builder()
+                .entityPackage(entityPackage)
+                .repositoryPackage(repositoryPackage)
+                .repositoryPostfix(repositoryPostfix)
+                .managerPackage(managerPackage)
+                .managerPostfix(managerPostfix)
+                .onlyAnnotations(onlyAnnotations)
+                .overwrite(overwrite)
+                .lombokAnnotations(lombokAnnotations)
+                .withComments(withComments)
+                .withJpaSpecificationExecutor(withJpaSpecificationExecutor)
+                .additionalExtendsList(additionalExtendsList)
+                .project(project)
+                .build();
     }
 
 }

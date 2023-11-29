@@ -43,21 +43,16 @@ public class ScanningConfigurationSupport {
         this.attributes = null;
     }
 
-    @SuppressWarnings("unchecked")
     public Iterable<String> getBasePackages() {
 
         if (entityPackage.length == 0) {
             String className = this.annotationMetadata.getClassName();
             return Collections.singleton(ClassUtils.getPackageName(className));
         } else {
-            HashSet packages = new HashSet();
-            packages.addAll(Arrays.asList(entityPackage));
-
-            return packages;
+            return new HashSet<>(Arrays.asList(entityPackage));
         }
     }
 
-    @SuppressWarnings("unchecked")
     public Collection<BeanDefinition> getCandidates(ResourceLoader resourceLoader) {
         if(this.getBasePackages() == null){
             return Collections.emptyList();
@@ -76,13 +71,13 @@ public class ScanningConfigurationSupport {
             scanner.setIncludeAnnotation(jakarta.persistence.Entity.class);
         }
 
-        Iterator filterPackages = this.getBasePackages().iterator();
+        Iterator<String> filterPackages = this.getBasePackages().iterator();
 
-        HashSet candidates = new HashSet();
+        HashSet<BeanDefinition> candidates = new HashSet<>();
 
         while(filterPackages.hasNext()) {
-            String basePackage = (String)filterPackages.next();
-            Set candidate = scanner.findCandidateComponents(basePackage);
+            String basePackage = filterPackages.next();
+            Set<BeanDefinition> candidate = scanner.findCandidateComponents(basePackage);
             candidates.addAll(candidate);
         }
 

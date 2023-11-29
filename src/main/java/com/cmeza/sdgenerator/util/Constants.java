@@ -15,10 +15,11 @@ public class Constants {
     public static final String EXTENDS = "additional-extends";
     public static final String LOMBOK_ANOTATIONS = "lombok-annotations";
     public static final String WITH_COMMENTS = "with-comments";
+    public static final String WITH_JPASPECIFICATIONEXECUTOR = "with-JpaSpecificationExecutor";
 
     public static final String PROJECT_NAME = "Spring Data Generator";
 
-    public static final String VERSION = "(v2.0.0)";
+    public static final String VERSION = "(v2.0.1)";
 
     public static final String TABLE_POSTFIX_COLUMN = "Postfix";
 

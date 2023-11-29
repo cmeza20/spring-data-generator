@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.0.1] - 2023-11-29
+### Added
+- [Issue:33]: Enable/Disable JpaSpecificationExecutor<?>
+
 ## [2.0.0] - 2023-02-09
 ### Added
 - Jakarta persistence support
@@ -54,6 +58,7 @@
 ### Added
 - Generate in Runtime
 
+[2.0.1]: https://github.com/cmeza20/spring-data-generator/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/cmeza20/spring-data-generator/compare/1.1.9...2.0.0
 [1.1.9]: https://github.com/cmeza20/spring-data-generator/compare/1.1.8...1.1.9
 [1.1.8]: https://github.com/cmeza20/spring-data-generator/compare/1.1.7...1.1.8
@@ -70,3 +75,4 @@
 
 [Issue:20]: https://github.com/cmeza20/spring-data-generator/issues/20
 [Issue:25]: https://github.com/cmeza20/spring-data-generator/issues/25
+[Issue:33]: https://github.com/cmeza20/spring-data-generator/issues/33

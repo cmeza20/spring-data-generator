@@ -1,9 +1,11 @@
 package com.cmeza.sdgenerator.util;
 
 import com.cmeza.sdgenerator.support.maker.values.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -108,7 +110,7 @@ public class BuildUtils {
         constructor.append(CommonValues.PARENTHESIS_END)
                 .append(CommonValues.KEY_START)
                 .append(body.isEmpty() ? CommonValues.NEWLINE : body)
-                .append(returnString == null ? "" : returnString.isEmpty() ? "" : buildReturn(returnString))
+                .append(Objects.isNull(returnString) ? StringUtils.EMPTY : (returnString.isEmpty() ? StringUtils.EMPTY : buildReturn(returnString)))
                 .append(CommonValues.TAB)
                 .append(CommonValues.KEY_END);
 

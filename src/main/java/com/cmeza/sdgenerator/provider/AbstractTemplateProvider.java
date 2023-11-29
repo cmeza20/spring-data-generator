@@ -4,10 +4,10 @@ import com.cmeza.sdgenerator.util.CustomResourceLoader;
 import com.cmeza.sdgenerator.util.GeneratorUtils;
 import com.cmeza.sdgenerator.util.SDLogger;
 import com.cmeza.sdgenerator.util.Tuple;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,25 +20,25 @@ import java.util.*;
  */
 public abstract class AbstractTemplateProvider {
 
-    private Class<?>[] excludeClasses;
-    private String postfix;
-    private boolean debug;
+    private final Class<?>[] excludeClasses;
+    private final String postfix;
+    private final boolean debug;
     private Collection<File> includeFilter;
     private String includeFilterPostfix = "";
-    private boolean overwrite;
+    private final boolean overwrite;
 
-    public AbstractTemplateProvider(AnnotationAttributes attributes) {
+    protected AbstractTemplateProvider(AnnotationAttributes attributes) {
         Assert.notNull(attributes, "AnnotationAttributes must not be null!");
         this.excludeClasses = attributes.getClassArray(getExcludeClasses());
         this.postfix = attributes.getString(getPostfix());
         this.debug = attributes.getBoolean("debug");
         this.overwrite = attributes.getBoolean("overwrite");
         if (excludeClasses.length > 0 && debug) {
-            SDLogger.debug(String.format("Exclude %s %s in the %s generator", excludeClasses.length, excludeClasses.length == 1 ? "entity":"entities", postfix));
+            SDLogger.debug(String.format("Exclude %s %s in the %s generator", excludeClasses.length, excludeClasses.length == 1 ? "entity" : "entities", postfix));
         }
     }
 
-    public AbstractTemplateProvider(CustomResourceLoader customResourceLoader) {
+    protected AbstractTemplateProvider(CustomResourceLoader customResourceLoader) {
         Assert.notNull(customResourceLoader, "CustomResourceLoader must not be null!");
         this.postfix = customResourceLoader.getPostfix();
         this.debug = true;
@@ -49,15 +49,15 @@ public abstract class AbstractTemplateProvider {
     public void initializeCreation(String path, String ePackage, Collection<BeanDefinition> candidates, String[] entityPackage) {
         int generatedCount = 0;
 
-        if(!GeneratorUtils.verifyPackage(path)){
+        if (!GeneratorUtils.verifyPackage(path)) {
             return;
         }
 
-        Arrays.sort(entityPackage, Comparator.comparingInt((c) -> c.length()));
+        Arrays.sort(entityPackage, Comparator.comparingInt(String::length));
 
         for (BeanDefinition beanDefinition : candidates) {
 
-            if (verifyEntityNonExclude(beanDefinition.getBeanClassName())){
+            if (verifyEntityNonExclude(beanDefinition.getBeanClassName())) {
                 continue;
             }
 
@@ -69,7 +69,7 @@ public abstract class AbstractTemplateProvider {
         SDLogger.plusGenerated(generatedCount);
     }
 
-    protected void setIncludeFilter(Collection<File> includeFilter){
+    protected void setIncludeFilter(Collection<File> includeFilter) {
         this.includeFilter = includeFilter;
     }
 
@@ -85,8 +85,8 @@ public abstract class AbstractTemplateProvider {
         }
 
         boolean result = includeFilter.stream().anyMatch(i ->
-            i.getName().replace(".java", "")
-                    .equals(beanDefinitionName + includeFilterPostfix)
+                i.getName().replace(".java", "")
+                        .equals(beanDefinitionName + includeFilterPostfix)
         );
 
         if (!result) {
@@ -95,25 +95,26 @@ public abstract class AbstractTemplateProvider {
         return new Tuple<>(result, warnPosition);
     }
 
-    private boolean verifyEntityNonExclude(String beanClassName){
+    private boolean verifyEntityNonExclude(String beanClassName) {
         return Arrays.stream(excludeClasses).anyMatch(b -> b.getName().equals(beanClassName));
     }
 
-    private boolean createHelper(String path, BeanDefinition beanDefinition, String postfix, String repositoryPackage, String[] entityPackage){
+    private boolean createHelper(String path, BeanDefinition beanDefinition, String postfix, String repositoryPackage, String[] entityPackage) {
+        Assert.notNull(beanDefinition, "BeanDefinition is null");
         String simpleClassName = GeneratorUtils.getSimpleClassName(beanDefinition.getBeanClassName());
         Tuple<Boolean, Integer> result = null;
-        if(simpleClassName != null){
+        if (simpleClassName != null) {
 
             String fileHelper = simpleClassName + postfix + ".java";
 
-            String additionalPath = this.getAdditionalPath(entityPackage, beanDefinition,  simpleClassName, path);
+            String additionalPath = this.getAdditionalPath(entityPackage, beanDefinition, simpleClassName, path);
             String additionalPackage = "";
             if (!StringUtils.isEmpty(additionalPath)) {
                 repositoryPackage += "." + additionalPath;
                 additionalPackage = additionalPath;
-                additionalPath = additionalPath.replace(".", "/") + "/";
+                additionalPath = additionalPath.replace(".", File.separator) + File.separator;
             }
-            String filePath = path + "/" + additionalPath + fileHelper;
+            String filePath = path + File.separator + additionalPath + fileHelper;
 
             Tuple<Boolean, Integer> verifyInclude = verifyIncludeFilter(simpleClassName);
             if (!verifyInclude.left()) {
@@ -125,13 +126,13 @@ public abstract class AbstractTemplateProvider {
 
             String fileCondition = "Created";
             if (overwrite && file.exists()) {
-                file.delete();
+                GeneratorUtils.deleteQuietly(file);
                 fileCondition = "Overwritten";
             }
 
-            if (!file.exists()){
+            if (!file.exists()) {
                 result = createFileFromTemplate(filePath, repositoryPackage, simpleClassName, postfix, beanDefinition, additionalPackage);
-                if (debug){
+                if (debug) {
                     SDLogger.addRowGeneratedTable(postfix, fileHelper, result.left() ? fileCondition : "Error #" + result.right());
                 }
             }
@@ -139,12 +140,12 @@ public abstract class AbstractTemplateProvider {
             SDLogger.addError(String.format("Could not get SimpleName from: %s", beanDefinition.getBeanClassName()));
         }
 
-        return result == null ? false : result.left();
+        return result != null && result.left();
     }
 
     protected abstract Tuple<String, Integer> getContentFromTemplate(String mPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition, String additionalPackage);
 
-    private Tuple<Boolean, Integer> createFileFromTemplate(String path, String repositoryPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition, String additionalPackage){
+    private Tuple<Boolean, Integer> createFileFromTemplate(String path, String repositoryPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition, String additionalPackage) {
         Tuple<String, Integer> content = getContentFromTemplate(repositoryPackage, simpleClassName, postfix, beanDefinition, additionalPackage);
         if (content.left() == null) {
             return new Tuple<>(false, content.right());
@@ -159,6 +160,7 @@ public abstract class AbstractTemplateProvider {
     }
 
     protected abstract String getExcludeClasses();
+
     protected abstract String getPostfix();
 
     private String getAdditionalPath(String[] entityPackages, BeanDefinition beanDefinition, String filename, String path) {
@@ -179,7 +181,7 @@ public abstract class AbstractTemplateProvider {
         }
 
         if (!additionalFolders.isEmpty()) {
-            additionalFolders.sort((a, b)-> Integer.compare(b.length(), a.length()));
+            additionalFolders.sort((a, b) -> Integer.compare(b.length(), a.length()));
             String additional = path + "/" + additionalFolders.get(0);
             String pathAdditional = additional.replace(".", "/");
             GeneratorUtils.verifyPackage(pathAdditional);

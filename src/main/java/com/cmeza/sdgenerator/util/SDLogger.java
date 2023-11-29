@@ -21,9 +21,9 @@ public class SDLogger {
     private static final Log commonsLogger = LogFactory.getLog(SDGenerator.class);
     private static org.apache.maven.plugin.logging.Log mavenLogger;
     private static int generated = 0;
-    private static List<String> errors = new ArrayList<>();
-    private static List<String> warns = new ArrayList<>();
-    private static List<String> additionalExtend = new ArrayList<>();
+    private static final List<String> errors = new ArrayList<>();
+    private static final List<String> warns = new ArrayList<>();
+    private static final List<String> additionalExtend = new ArrayList<>();
     private static AsciiTable generatedTable;
 
     private SDLogger() {

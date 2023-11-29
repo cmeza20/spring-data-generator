@@ -82,4 +82,15 @@ public class GeneratorUtils {
             }
         }
     }
+    public static boolean deleteQuietly(File file) {
+        if (file == null) {
+            return false;
+        } else {
+            try {
+                return file.delete();
+            } catch (Exception var2) {
+                return false;
+            }
+        }
+    }
 }

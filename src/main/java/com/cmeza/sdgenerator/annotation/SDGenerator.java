@@ -39,5 +39,7 @@ public @interface SDGenerator {
 
     boolean withComments() default true;
 
+    boolean withJpaSpecificationExecutor() default true;
+
     Class<?>[] additionalExtends() default {};
 }

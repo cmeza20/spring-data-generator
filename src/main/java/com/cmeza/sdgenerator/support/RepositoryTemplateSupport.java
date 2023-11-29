@@ -17,23 +17,26 @@ public class RepositoryTemplateSupport extends AbstractTemplateProvider {
     private CustomResourceLoader loader;
     private final Set<String> additionalExtends;
     private final boolean withComments;
+    private final boolean withJpaSpecificationExecutor;
 
-    public RepositoryTemplateSupport(AnnotationAttributes attributes, Set<String> additionalExtends, boolean withComments) {
+    public RepositoryTemplateSupport(AnnotationAttributes attributes, Set<String> additionalExtends, boolean withComments, boolean withJpaSpecificationExecutor) {
         super(attributes);
         this.additionalExtends = additionalExtends;
         this.withComments = withComments;
+        this.withJpaSpecificationExecutor = withJpaSpecificationExecutor;
     }
 
-    public RepositoryTemplateSupport(CustomResourceLoader loader, Set<String> additionalExtends, boolean withComments) {
+    public RepositoryTemplateSupport(CustomResourceLoader loader, Set<String> additionalExtends, boolean withComments, boolean withJpaSpecificationExecutor) {
         super(loader);
         this.loader = loader;
         this.additionalExtends = additionalExtends;
         this.withComments = withComments;
+        this.withJpaSpecificationExecutor = withJpaSpecificationExecutor;
     }
 
     @Override
     protected Tuple<String, Integer> getContentFromTemplate(String repositoryPackage, String simpleClassName, String postfix, BeanDefinition beanDefinition, String additionalPackage) {
-        return new RepositoryStructure(repositoryPackage, simpleClassName, beanDefinition.getBeanClassName(), postfix, loader, additionalExtends, withComments).build();
+        return new RepositoryStructure(repositoryPackage, simpleClassName, beanDefinition.getBeanClassName(), postfix, loader, additionalExtends, withComments, withJpaSpecificationExecutor).build();
     }
 
     @Override

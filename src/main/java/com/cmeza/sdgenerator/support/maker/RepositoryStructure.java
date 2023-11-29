@@ -19,10 +19,8 @@ import java.util.Set;
  */
 public class RepositoryStructure {
 
-    private CustomResourceLoader loader;
-    private ObjectBuilder objectBuilder;
-    private Integer error = 0;
-    private final static Map<Class<?>, Class<?>> mapConvert = new HashMap<>();
+    private static final Map<Class<?>, Class<?>> mapConvert = new HashMap<>();
+
     static {
         mapConvert.put(boolean.class, Boolean.class);
         mapConvert.put(byte.class, Byte.class);
@@ -34,24 +32,31 @@ public class RepositoryStructure {
         mapConvert.put(double.class, Double.class);
     }
 
-    public RepositoryStructure(String repositoryPackage, String entityName, String entityClass, String postfix, CustomResourceLoader loader, Set<String> additionalExtends, boolean withComments) {
+    private final CustomResourceLoader loader;
+    private ObjectBuilder objectBuilder;
+    private Integer error = 0;
+
+    public RepositoryStructure(String repositoryPackage, String entityName, String entityClass, String postfix, CustomResourceLoader loader, Set<String> additionalExtends, boolean withComments, boolean withJpaSpecificationExecutor) {
         this.loader = loader;
         String repositoryName = entityName + postfix;
         Tuple<String, Boolean> entityId = getEntityId(entityClass);
-        if(entityId != null) {
+        if (entityId != null) {
 
             ObjectStructure objectStructure = new ObjectStructure(repositoryPackage, ScopeValues.PUBLIC, ObjectTypeValues.INTERFACE, repositoryName)
                     .addImport(entityClass)
                     .addImport("org.springframework.data.jpa.repository.JpaRepository")
-                    .addImport("org.springframework.data.jpa.repository.JpaSpecificationExecutor")
                     .addImport("org.springframework.stereotype.Repository")
                     .addImport(entityId.right() ? entityId.left() : "")
                     .addAnnotation("Repository")
-                    .addExtend("JpaRepository", entityName, GeneratorUtils.getSimpleClassName(entityId.left()))
-                    .addExtend("JpaSpecificationExecutor", entityName);
+                    .addExtend("JpaRepository", entityName, GeneratorUtils.getSimpleClassName(entityId.left()));
+
+            if (withJpaSpecificationExecutor) {
+                objectStructure.addImport("org.springframework.data.jpa.repository.JpaSpecificationExecutor");
+                objectStructure.addExtend("JpaSpecificationExecutor", entityName);
+            }
 
             if (additionalExtends != null) {
-                for(String additionalExtend : additionalExtends) {
+                for (String additionalExtend : additionalExtends) {
                     objectStructure.addImport(additionalExtend);
                     objectStructure.addExtend(GeneratorUtils.getSimpleClassName(additionalExtend), entityName);
                 }
@@ -60,8 +65,7 @@ public class RepositoryStructure {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private Tuple<String, Boolean> getEntityId(String entityClass){
+    private Tuple<String, Boolean> getEntityId(String entityClass) {
         try {
             Class<?> entity;
             if (loader == null) {
@@ -70,7 +74,7 @@ public class RepositoryStructure {
                 entity = loader.getUrlClassLoader().loadClass(entityClass);
             }
 
-            while (entity != null){
+            while (entity != null) {
                 for (Field field : entity.getDeclaredFields()) {
                     if (field.isAnnotationPresent(Id.class) || field.isAnnotationPresent(EmbeddedId.class) ||
                             field.isAnnotationPresent(jakarta.persistence.Id.class) || field.isAnnotationPresent(jakarta.persistence.EmbeddedId.class)) {
@@ -108,12 +112,12 @@ public class RepositoryStructure {
         }
     }
 
-    public Tuple<String, Integer> build(){
+    public Tuple<String, Integer> build() {
         return new Tuple<>(objectBuilder == null ? null : objectBuilder.build(), error);
     }
 
     private boolean isCustomType(Class<?> clazz) {
-        return  !clazz.isAssignableFrom(Boolean.class) &&
+        return !clazz.isAssignableFrom(Boolean.class) &&
                 !clazz.isAssignableFrom(Byte.class) &&
                 !clazz.isAssignableFrom(String.class) &&
                 !clazz.isAssignableFrom(Integer.class) &&

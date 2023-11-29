@@ -5,10 +5,9 @@ import com.cmeza.sdgenerator.support.ScanningConfigurationSupport;
 import com.cmeza.sdgenerator.util.*;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.project.MavenProject;
-
-import java.util.Set;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Created by carlos on 22/04/17.
@@ -16,7 +15,7 @@ import java.util.Set;
 @Mojo(name = "repositories")
 @Execute(phase = LifecyclePhase.COMPILE)
 @SuppressWarnings("unused")
-public class SDRepositoryMojo extends CommonsMojo{
+public class SDRepositoryMojo extends CommonsMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -29,7 +28,8 @@ public class SDRepositoryMojo extends CommonsMojo{
         this.validateField(Constants.EXTENDS);
 
         try {
-            this.executeInternalMojo(project, repositoryPostfix, overwrite, repositoryPackage, entityPackage, onlyAnnotations, additionalExtendsList, withComments);
+            GeneratorProperties generatorProperties = this.buildProperties();
+            this.executeInternalMojo(generatorProperties);
             SDLogger.printGeneratedTables(true);
         } catch (Exception e) {
             SDLogger.addError(e.getMessage());
@@ -37,21 +37,21 @@ public class SDRepositoryMojo extends CommonsMojo{
         }
     }
 
-    public void executeInternalMojo(MavenProject project, String repositoryPostfix, boolean overwrite, String repositoryPackage, String[] entityPackage, boolean onlyAnnotations, Set<String> additionalExtendsList, boolean withComments) throws MojoExecutionException, MojoFailureException {
-        CustomResourceLoader resourceLoader = new CustomResourceLoader(project);
-        resourceLoader.setPostfix(repositoryPostfix);
-        resourceLoader.setOverwrite(overwrite);
+    public void executeInternalMojo(GeneratorProperties generatorProperties) throws MojoExecutionException {
+        CustomResourceLoader resourceLoader = new CustomResourceLoader(generatorProperties.getProject());
+        resourceLoader.setPostfix(generatorProperties.getRepositoryPostfix());
+        resourceLoader.setOverwrite(generatorProperties.isOverwrite());
 
-        String absolutePath = GeneratorUtils.getAbsolutePath(repositoryPackage);
-        if (absolutePath == null){
+        String absolutePath = GeneratorUtils.getAbsolutePath(generatorProperties.getRepositoryPackage());
+        if (absolutePath == null) {
             SDLogger.addError("Could not define the absolute path of the repositories");
             throw new SDMojoException();
         }
 
-        ScanningConfigurationSupport scanningConfigurationSupport = new ScanningConfigurationSupport(entityPackage, onlyAnnotations);
+        ScanningConfigurationSupport scanningConfigurationSupport = new ScanningConfigurationSupport(generatorProperties.getEntityPackage(), generatorProperties.isOnlyAnnotations());
 
-        RepositoryTemplateSupport repositoryTemplateSupport = new RepositoryTemplateSupport(resourceLoader, additionalExtendsList, withComments);
-        repositoryTemplateSupport.initializeCreation(absolutePath, repositoryPackage, scanningConfigurationSupport.getCandidates(resourceLoader), entityPackage);
+        RepositoryTemplateSupport repositoryTemplateSupport = new RepositoryTemplateSupport(resourceLoader, generatorProperties.getAdditionalExtendsList(), generatorProperties.isWithComments(), generatorProperties.isWithJpaSpecificationExecutor());
+        repositoryTemplateSupport.initializeCreation(absolutePath, generatorProperties.getRepositoryPackage(), scanningConfigurationSupport.getCandidates(resourceLoader), generatorProperties.getEntityPackage());
 
     }
 

@@ -1,4 +1,4 @@
-# Spring Data Generator [![Build Status](https://travis-ci.org/cmeza20/spring-data-generator.svg?branch=master)](https://travis-ci.org/cmeza20/spring-data-generator) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.cmeza/spring-data-generator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.cmeza/spring-data-generator)
+# Spring Data Generator [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.cmeza/spring-data-generator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.cmeza/spring-data-generator)
 
 Spring Data Generator for JPA repositories and managers.
 
@@ -29,7 +29,7 @@ Download the jar through Maven:
 <dependency>
   <groupId>com.cmeza</groupId>
   <artifactId>spring-data-generator</artifactId>
-  <version>2.0.0</version>
+  <version>2.0.1</version>
 </dependency>
 ```
 
@@ -48,7 +48,8 @@ The simple Spring Data JPA configuration with Java-Config looks like this:
                 QuerydslPredicateExecutor.class
         },
         lombokAnnotations = false,
-        withComments = true
+        withComments = true,
+        withJpaSpecificationExecutor = true
 )
 @SpringBootApplication
 public class AppConfig {
@@ -71,8 +72,9 @@ public class AppConfig {
 | debug | No | false | Enable debug log |
 | overwrite | No | false | Overwrite existing files |
 | additionalExtends | No | [] | Extension of additional interfaces |
-| lombok-annotations | No | false | Support Lombok annotations |
-| with-comments | No | true | Class comments activation |
+| lombokAnnotations | No | false | Support Lombok annotations |
+| withComments | No | true | Class comments activation |
+| withJpaSpecificationExecutor | No | true | JpaSpecificationExecutor activation |
 
 ## Generate by Plugin ##
 Download the jar through Maven:
@@ -82,7 +84,7 @@ Download the jar through Maven:
 		<plugin>
 			<groupId>com.cmeza</groupId>
 			<artifactId>spring-data-generator</artifactId>
-			<version>2.0.0</version>
+			<version>2.0.1</version>
 			<configuration>
 				<entity-package>
 				    <param>com.acme.model</param>
@@ -98,6 +100,7 @@ Download the jar through Maven:
                 </additional-extends>
                 <lombok-annotations>false</lombok-annotations>
                 <with-comments>true</with-comments>
+                <with-JpaSpecificationExecutor>true</with-JpaSpecificationExecutor>
 			</configuration>
 		</plugin>
 	</plugins>
@@ -116,6 +119,7 @@ Download the jar through Maven:
 | additional-extends | No | [] | Extension of additional interfaces |
 | lombok-annotations | No | false | Support Lombok annotations |
 | with-comments | No | true | Class comments activation |
+| with-JpaSpecificationExecutor | No | true | JpaSpecificationExecutor activation |
 
 #### Generate repositories (terminal)
 ```
@@ -157,8 +161,16 @@ public class Account {
 Generate a repository interface example in `com.acme.repositories`:
 
 ```java
+// With JpaSpecificationExecutor interface
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long>, JpaSpecificationExecutor<Account> {
+}
+```
+
+```java
+// Without JpaSpecificationExecutor interface
+@Repository
+public interface AccountRepository extends JpaRepository<Account, Long> {
 }
 ```
 

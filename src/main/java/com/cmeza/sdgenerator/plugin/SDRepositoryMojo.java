@@ -12,7 +12,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 /**
  * Created by carlos on 22/04/17.
  */
-@Mojo(name = "repositories")
+@Mojo(name = "repositories", requiresDependencyResolution = ResolutionScope.RUNTIME)
 @Execute(phase = LifecyclePhase.COMPILE)
 @SuppressWarnings("unused")
 public class SDRepositoryMojo extends CommonsMojo {
